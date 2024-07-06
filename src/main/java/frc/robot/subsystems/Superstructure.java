@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.PS5Controller;
@@ -9,8 +8,6 @@ import edu.wpi.first.wpilibj.PS5Controller;
 
 public class Superstructure implements ISubsystem{
     private Drivetrain drivetrain;
-    private Feed feed;
-    private Hopper hopper;
     private Intake intake;
     private LED led;
     private Shooter shooter;
@@ -38,12 +35,10 @@ public class Superstructure implements ISubsystem{
         this.state = _state;
         //this.automateScoring(_automation);
         this.drivetrain = Drivetrain.getInstance();
-        this.feed = Feed.getInstance();
-        this.hopper = Hopper.getInstance();
         this.intake = Intake.getInstance();
         this.led = LED.getInstance();
         this.shooter = Shooter.getInstance();
-        this.subsystems = new ISubsystem[]{drivetrain, feed, hopper, intake, led, shooter};
+        this.subsystems = new ISubsystem[]{drivetrain, intake, led, shooter};
     }
 
     private static Superstructure instance;
@@ -84,50 +79,9 @@ public class Superstructure implements ISubsystem{
       } 
 
     private void handleInputs(){ //TODO change to reference states
-      if (operator.getCrossButtonPressed()){
-      if (intake.pneumaticOn == false){
-        intake.pneumaticOn = true;
-        intake.motor.set(ControlMode.PercentOutput, 0.75); //TODO change intake motor to different name
-        hopper.motor.set(ControlMode.PercentOutput, 0.75);
-        intake.intakeOn = true;
-        led.ledRunning = true;
-        led.orange();
-      } else {
-        intake.pneumaticOn = false;
-        intake.motor.set(ControlMode.PercentOutput, 0);
-        hopper.motor.set(ControlMode.PercentOutput, 0);
-        intake.intakeOn = false;
-        led.ledRunning = false;
-      }
-    }
-
-    intake.pneumaticHandler(intake.pneumaticOn);
-
-    if (driver.getSquareButtonPressed()){
-      if (feed.feedOn == false){
-        feed.motor.set(ControlMode.PercentOutput, 0.75);
-        feed.feedOn = true;
-        led.ledRunning = true;
-        led.red();
-      } else {
-        feed.motor.set(ControlMode.PercentOutput, 0);
-        feed.feedOn = false;
-        led.ledRunning = false;
-      }
-    }
-
-    if (driver.getR2Button()){
-      shooter.motor.set(1);
-      led.ledRunning = true;
-      led.green();
-    } else {
-      shooter.motor.set(0);
-      led.ledRunning = false;
-    }
-
-    if (driver.getR1ButtonPressed()){
+      if (driver.getR1ButtonPressed()){
       drivetrain.reverse();
-    }
+      }
   }
 
     @Override

@@ -5,9 +5,10 @@ import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
+
 
 public class Util {
   //198 instructions
@@ -92,4 +93,19 @@ public class Util {
 		return mcs[0];
 	}
 
+  public static CANSparkMax createSparkGroup(int[] ids, boolean invWhole, boolean invIndividual) {
+		if (ids.length == 0) {
+			System.err.println("[EE] Attempted to create empty group of CANSparkMax");
+			new Exception().printStackTrace();
+		}
+		CANSparkMax[] mcs = new CANSparkMax[ids.length];
+		for (int i = 0; i < ids.length; i++) {
+			mcs[i] = new CANSparkMax(ids[i], MotorType.kBrushless);
+			if (i > 0)
+				mcs[i].follow(mcs[0]);
+        mcs[i].setInverted(invIndividual);
+		}
+		mcs[0].setInverted(invWhole);
+		return mcs[0];
+  }
 }

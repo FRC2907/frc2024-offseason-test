@@ -38,8 +38,8 @@ public class Drivetrain extends DifferentialDrive implements ISubsystem{
     public static Drivetrain getInstance(){
       TalonFX left, right;
       if (instance == null){
-        left = Util.createTalonFXGroup(frc.robot.constants.Ports.talon.drivetrain.LEFTS, true, false);
-        right = Util.createTalonFXGroup(frc.robot.constants.Ports.talon.drivetrain.RIGHTS, false, false);
+        left = Util.createTalonFXGroup(frc.robot.constants.Ports.can.drivetrain.LEFTS, true, false);
+        right = Util.createTalonFXGroup(frc.robot.constants.Ports.can.drivetrain.RIGHTS, false, false);
         instance = new Drivetrain(left, right);
       }
       return instance;
