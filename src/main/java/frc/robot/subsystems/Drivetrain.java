@@ -1,7 +1,8 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.util.Util;
 
@@ -9,23 +10,12 @@ import frc.robot.util.Util;
 
 
 public class Drivetrain extends DifferentialDrive implements ISubsystem{
-    /*int i_left_leader = 1, i_left_follower_1 = 2, i_left_follower_2 = 3,
-     i_right_leader = 14, i_right_follower_1 = 15, i_right_follower_2 = 16;
-
-    TalonFX left_leader = new TalonFX(i_left_leader);
-    TalonFX left_follower_1 = new TalonFX(i_left_follower_1);
-    TalonFX left_follower_2 = new TalonFX(i_left_follower_2);
-
-    TalonFX right_leader = new TalonFX(i_right_leader);
-    TalonFX right_follower_1 = new TalonFX(i_right_follower_1);
-    TalonFX right_follower_2 = new TalonFX(i_right_follower_2); */
-
-    public TalonFX leftMotor;
-    public TalonFX rightMotor;
+    public CANSparkMax leftMotor;
+    public CANSparkMax rightMotor;
 
     public static DriveMode mode;
 
-    private Drivetrain(TalonFX left, TalonFX right){
+    private Drivetrain(CANSparkMax left, CANSparkMax right){
       super(left, right);
       this.leftMotor = left;
       this.rightMotor = right;
@@ -36,16 +26,16 @@ public class Drivetrain extends DifferentialDrive implements ISubsystem{
     private static Drivetrain instance;
 
     public static Drivetrain getInstance(){
-      TalonFX left, right;
+      CANSparkMax left, right;
       if (instance == null){
-        left = Util.createTalonFXGroup(frc.robot.constants.Ports.can.drivetrain.LEFTS, true, false);
-        right = Util.createTalonFXGroup(frc.robot.constants.Ports.can.drivetrain.RIGHTS, false, false);
+        left = Util.createSparkGroup(frc.robot.constants.Ports.can.drivetrain.LEFTS, true, false);
+        right = Util.createSparkGroup(frc.robot.constants.Ports.can.drivetrain.RIGHTS, false, false);
         instance = new Drivetrain(left, right);
       }
       return instance;
     }
 
-    public enum DriveMode{
+    public enum DriveMode {
         AUTO, LOCAL_FORWARD, LOCAL_REVERSED
     }
     
@@ -65,35 +55,20 @@ public class Drivetrain extends DifferentialDrive implements ISubsystem{
       }
     }
     
-    /*private void handleDriving(){
-        double speed = driver.getLeftY();
-        double rotation = -driver.getRightX();
-    
-        switch(mode){
-          case AUTO:
-          case LOCAL_FORWARD:
-            break;
-          case LOCAL_REVERSED:
-            speed = -speed;
-            break;
-        }
-    
-        double left = speed + rotation;
-        double right = speed - rotation;
-    
-        if (left > 1.0 || left < -1.0) { right = right / Math.abs(left); left = left / Math.abs(left); }
-        if (right > 1.0 || right < -1.0) { left = left / Math.abs(right); right = right / Math.abs(right); }
-    
-        left = left / 4;
-        right = right / 4;
-    
-        left_leader.set(left);
-        right_leader.set(right);
-      } 
-    }*///superstructure
+    private Pose2d pose;
+
+    public Pose2d getPose(){
+      return this.pose;
+    }
+
+    private void setPose(Pose2d _pose){
+      this.pose = _pose;
+    }
 
     @Override
     public void onLoop(){}
+
+    
 
     @Override
     public void submitTelemetry(){}

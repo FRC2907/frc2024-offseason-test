@@ -108,4 +108,16 @@ public class Util {
 		mcs[0].setInverted(invWhole);
 		return mcs[0];
   }
+
+  public static double clamp(double min, double value, double max) {
+		if (max < min) { 
+			System.err.println("[EE] I was asked to clamp value " + value + " between min " + min + " and max " + max);
+			new Exception().printStackTrace();
+		}
+		if (value < min)
+			return min;
+		if (max < value)
+			return max;
+		return value;
+	}
 }

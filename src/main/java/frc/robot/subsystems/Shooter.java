@@ -1,16 +1,25 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.util.Util;
 
 public class Shooter implements ISubsystem{
-    //int i_left_shooter = 7, i_right_shooter = 8;
+    private double setPoint;
 
-    public CANSparkMax motor;
+    private CANSparkMax motor;
+    private NetworkTable NT;
+    private DoublePublisher p_velocity;
 
     private Shooter(CANSparkMax _motor){
         motor = _motor;
+        this.motor.getEncoder().setVelocityConversionFactor(1 / frc.robot.constants.Control.shooter.ENCODER_RPM_PER_WHEEL_RPM);
+        this.NT = NetworkTableInstance.getDefault().getTable("shooter");
+        this.p_velocity = this.NT.getDoubleTopic("velocity").publish();
     }
 
     private static Shooter instance;
@@ -21,15 +30,38 @@ public class Shooter implements ISubsystem{
 
             instance = new Shooter(motor);
         }
-
         return instance;
     }
 
-    @Override
-    public void onLoop(){}
+    public void setSetPoint(double _setPoint){
+        this.setPoint = _setPoint;
+    }
+
+    public void off(){
+        this.setSetPoint(frc.robot.constants.Control.shooter.kOff);
+    }
+
+    public void amp(){
+        this.setSetPoint(frc.robot.constants.Control.shooter.kAmpRPM);
+    }
+
+    public void speaker(){
+        this.setSetPoint(frc.robot.constants.Control.shooter.kSpeakerRPM);
+    }
+
+    public double getVelocity(){
+        return this.motor.getEncoder().getVelocity();
+    }
 
     @Override
-    public void submitTelemetry(){}
+    public void onLoop(){
+        this.motor.getPIDController().setReference(this.setPoint, ControlType.kVelocity);
+    }
+
+    @Override
+    public void submitTelemetry(){
+        p_velocity.set(getVelocity());
+    }
 
     @Override
     public void receiveOptions(){}

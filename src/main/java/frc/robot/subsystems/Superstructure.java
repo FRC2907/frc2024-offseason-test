@@ -1,12 +1,13 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.PS5Controller;
 
 
 
 public class Superstructure implements ISubsystem{
+    private Arm arm;
     private Drivetrain drivetrain;
     private Intake intake;
     private LED led;
@@ -34,12 +35,13 @@ public class Superstructure implements ISubsystem{
     private Superstructure(RobotState _state, boolean _automation){
         this.state = _state;
         //this.automateScoring(_automation);
+        this.arm = Arm.getInstance();
         this.drivetrain = Drivetrain.getInstance();
         this.intake = Intake.getInstance();
         this.led = LED.getInstance();
         this.shooter = Shooter.getInstance();
-        this.subsystems = new ISubsystem[]{drivetrain, intake, led, shooter};
-    }
+        this.subsystems = new ISubsystem[] { arm, drivetrain, intake, led, shooter };
+    } 
 
     private static Superstructure instance;
 
@@ -50,7 +52,7 @@ public class Superstructure implements ISubsystem{
       return instance;
     }
 
-    private void handleDriving(TalonFX leftMotor, TalonFX rightMotor){
+    private void handleDriving(CANSparkMax leftMotor, CANSparkMax rightMotor){
         double left;
         double right;
         double speed = driver.getLeftY();

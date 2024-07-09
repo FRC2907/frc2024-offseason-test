@@ -1,7 +1,11 @@
 package frc.robot.constants;
 
 public class Ports {
-    public static class can {
+    public static class can { //TODO all can ids are currently placeholders
+        public static class arm {
+            public static final int[] MOTORS = { 5, 6 };
+        }
+        
         public static class drivetrain {
             public static final int[] LEFTS = { 1, 2, 3 };
             public static final int[] RIGHTS = { 14, 15, 16 };
@@ -12,9 +16,6 @@ public class Ports {
         }
 
         public static class shooter {
-            public static final int LEFT = 7;
-            public static final int RIGHT = 8;
-
             public static final int[] MOTORS = { 8, 7 };
         }
     }
