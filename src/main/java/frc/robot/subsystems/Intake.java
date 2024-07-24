@@ -7,6 +7,8 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.constants.Ports;
+import frc.robot.util.Util;
 
 public class Intake implements ISubsystem{
     private double setPoint;
@@ -17,7 +19,7 @@ public class Intake implements ISubsystem{
     /*public boolean pneumaticOn;
     public boolean intakeOn;*/
 
-    private Intake(CANSparkMax _motor){
+    private Intake(CANSparkMax _motor){ //TODO add velocity conversion factor to other motor
       motor = _motor;
       _motor.setInverted(true);
       this.NT = NetworkTableInstance.getDefault().getTable("intake");
@@ -28,7 +30,7 @@ public class Intake implements ISubsystem{
 
     public static Intake getInstance(){
       if (instance == null){
-        CANSparkMax motor = new CANSparkMax(frc.robot.constants.Ports.can.intake.MOTOR, MotorType.kBrushless);
+        CANSparkMax motor = Util.createSparkGroup(Ports.can.intake.MOTORS, false, true);
 
         instance = new Intake(motor);
       }

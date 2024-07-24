@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import frc.robot.constants.Ports;
 import frc.robot.util.Util;
 
 
@@ -28,8 +29,8 @@ public class Drivetrain extends DifferentialDrive implements ISubsystem{
     public static Drivetrain getInstance(){
       CANSparkMax left, right;
       if (instance == null){
-        left = Util.createSparkGroup(frc.robot.constants.Ports.can.drivetrain.LEFTS, true, false);
-        right = Util.createSparkGroup(frc.robot.constants.Ports.can.drivetrain.RIGHTS, false, false);
+        left = Util.createSparkGroup(Ports.can.drivetrain.LEFTS, true, false);
+        right = Util.createSparkGroup(Ports.can.drivetrain.RIGHTS, false, false);
         instance = new Drivetrain(left, right);
       }
       return instance;

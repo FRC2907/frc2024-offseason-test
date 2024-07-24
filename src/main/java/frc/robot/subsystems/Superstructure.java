@@ -10,7 +10,7 @@ public class Superstructure implements ISubsystem{
     private Arm arm;
     private Drivetrain drivetrain;
     private Intake intake;
-    private LED led;
+    private Led led;
     private Shooter shooter;
     private ISubsystem[] subsystems;
     
@@ -38,7 +38,7 @@ public class Superstructure implements ISubsystem{
         this.arm = Arm.getInstance();
         this.drivetrain = Drivetrain.getInstance();
         this.intake = Intake.getInstance();
-        this.led = LED.getInstance();
+        this.led = Led.getInstance();
         this.shooter = Shooter.getInstance();
         this.subsystems = new ISubsystem[] { arm, drivetrain, intake, led, shooter };
     } 

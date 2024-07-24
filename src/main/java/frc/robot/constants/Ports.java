@@ -12,7 +12,7 @@ public class Ports {
         }
 
         public static class intake {
-            public static final int MOTOR = 13;
+            public static final int[] MOTORS = { 13, 12 };
         }
 
         public static class shooter {
