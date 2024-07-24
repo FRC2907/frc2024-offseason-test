@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import frc.robot.constants.Ports;
 
 public class Led implements ISubsystem{
 
@@ -26,7 +27,7 @@ public class Led implements ISubsystem{
 
     public static Led getInstance(){
       if (instance == null){
-        PWMSparkMax led = new PWMSparkMax(frc.robot.constants.Ports.PWM.LED);
+        PWMSparkMax led = new PWMSparkMax(Ports.PWM.LED);
         instance = new Led(led);
       }
       return instance;

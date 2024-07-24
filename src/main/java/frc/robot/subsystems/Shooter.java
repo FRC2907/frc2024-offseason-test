@@ -6,6 +6,8 @@ import com.revrobotics.CANSparkBase.ControlType;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.constants.Control;
+import frc.robot.constants.Ports;
 import frc.robot.util.Util;
 
 public class Shooter implements ISubsystem{
@@ -17,7 +19,7 @@ public class Shooter implements ISubsystem{
 
     private Shooter(CANSparkMax _motor){
         motor = _motor;
-        this.motor.getEncoder().setVelocityConversionFactor(1 / frc.robot.constants.Control.shooter.ENCODER_RPM_PER_WHEEL_RPM);
+        this.motor.getEncoder().setVelocityConversionFactor(1 / Control.shooter.ENCODER_VEL_UNIT_PER_SHOOTER_MPS);
         this.NT = NetworkTableInstance.getDefault().getTable("shooter");
         this.p_velocity = this.NT.getDoubleTopic("velocity").publish();
     }
@@ -26,32 +28,34 @@ public class Shooter implements ISubsystem{
 
     public static Shooter getInstance(){
         if (instance == null){
-            CANSparkMax motor = Util.createSparkGroup(frc.robot.constants.Ports.can.shooter.MOTORS, false, true);
+            CANSparkMax motor = Util.createSparkGroup(Ports.can.shooter.MOTORS, false, true);
 
             instance = new Shooter(motor);
         }
         return instance;
     }
 
+
+
     public void setSetPoint(double _setPoint){
         this.setPoint = _setPoint;
     }
 
     public void off(){
-        this.setSetPoint(frc.robot.constants.Control.shooter.kOff);
+        this.setSetPoint(Control.shooter.kOff);
     }
-
     public void amp(){
-        this.setSetPoint(frc.robot.constants.Control.shooter.kAmpRPM);
+        this.setSetPoint(Control.shooter.kAmpSpeed);
     }
-
     public void speaker(){
-        this.setSetPoint(frc.robot.constants.Control.shooter.kSpeakerRPM);
+        this.setSetPoint(Control.shooter.kSpeakerSpeed);
     }
 
     public double getVelocity(){
         return this.motor.getEncoder().getVelocity();
     }
+    
+    
 
     @Override
     public void onLoop(){

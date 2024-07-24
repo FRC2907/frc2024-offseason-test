@@ -7,8 +7,10 @@ public class Ports {
         }
         
         public static class drivetrain {
-            public static final int[] LEFTS = { 1, 2, 3 };
-            public static final int[] RIGHTS = { 14, 15, 16 };
+            public static final int FRONT_LEFT = 1;
+            public static final int REAR_LEFT = 2;
+            public static final int FRONT_RIGHT = 3;
+            public static final int REAR_RIGHT = 4;
         }
 
         public static class intake {

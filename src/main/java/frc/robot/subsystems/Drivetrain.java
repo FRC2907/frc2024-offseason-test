@@ -3,56 +3,77 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import frc.robot.constants.Ports;
-import frc.robot.util.Util;
 
 
 
 
-public class Drivetrain extends DifferentialDrive implements ISubsystem{
-    public CANSparkMax leftMotor;
-    public CANSparkMax rightMotor;
+public class Drivetrain extends MecanumDrive implements ISubsystem{
+    public CANSparkMax fLeftMotor;
+    public CANSparkMax rLeftMotor;
+    public CANSparkMax fRightMotor;
+    public CANSparkMax rRightMotor;
 
-    public static DriveMode mode;
+    private DriveMode mode;
+    public enum DriveMode {
+          AUTO
 
-    private Drivetrain(CANSparkMax left, CANSparkMax right){
-      super(left, right);
-      this.leftMotor = left;
-      this.rightMotor = right;
+        , LOCAL_FORWARD, LOCAL_REVERSED 
 
-      mode = DriveMode.LOCAL_FORWARD; 
+        , FIELD_FORWARD, FIELD_REVERSED
+    }
+
+    private Drivetrain(CANSparkMax frontLeft, CANSparkMax rearLeft, CANSparkMax frontRight, CANSparkMax rearRight){
+      super(frontLeft, rearLeft, frontRight, rearRight);
+      this.fLeftMotor = frontLeft;
+      this.rLeftMotor = rearLeft;
+      this.fRightMotor = frontRight;
+      this.rRightMotor = rearRight;
+      this.mode = DriveMode.LOCAL_FORWARD; 
     }
 
     private static Drivetrain instance;
 
     public static Drivetrain getInstance(){
-      CANSparkMax left, right;
+      CANSparkMax frontLeft, rearLeft, frontRight, rearRight;
       if (instance == null){
-        left = Util.createSparkGroup(Ports.can.drivetrain.LEFTS, true, false);
-        right = Util.createSparkGroup(Ports.can.drivetrain.RIGHTS, false, false);
-        instance = new Drivetrain(left, right);
+        frontLeft = new CANSparkMax(Ports.can.drivetrain.FRONT_LEFT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+        rearLeft = new CANSparkMax(Ports.can.drivetrain.REAR_LEFT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+        frontRight = new CANSparkMax(Ports.can.drivetrain.FRONT_RIGHT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+        rearRight = new CANSparkMax(Ports.can.drivetrain.REAR_RIGHT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+        instance = new Drivetrain(frontLeft, rearLeft, frontRight, rearRight);
       }
       return instance;
     }
-
-    public enum DriveMode {
-        AUTO, LOCAL_FORWARD, LOCAL_REVERSED
-    }
     
-    public static void setDriveMode(DriveMode newMode){
-        mode = newMode;
+    public void setDriveMode(DriveMode newMode){
+        this.mode = newMode;
     }
   
-    public DriveMode getDriveMode(){
-        return mode;
-    }
+    public DriveMode getDriveMode(){ return this.mode; }
 
     public void reverse(){
       if (mode == DriveMode.LOCAL_FORWARD){
         setDriveMode(DriveMode.LOCAL_REVERSED);
       } else if (mode == DriveMode.LOCAL_REVERSED){
         setDriveMode(DriveMode.LOCAL_FORWARD);
+      } else if (mode == DriveMode.FIELD_FORWARD){
+        setDriveMode(DriveMode.FIELD_REVERSED);
+      } else if (mode == DriveMode.FIELD_REVERSED){
+        setDriveMode(DriveMode.FIELD_FORWARD);
+      }
+    }
+
+    public void localFieldSwitch(){
+      if (mode == DriveMode.LOCAL_FORWARD){
+        setDriveMode(DriveMode.FIELD_FORWARD);
+      } else if (mode == DriveMode.LOCAL_REVERSED){
+        setDriveMode(DriveMode.FIELD_REVERSED);
+      } else if (mode == DriveMode.FIELD_FORWARD){
+        setDriveMode(DriveMode.LOCAL_FORWARD);
+      } else if (mode == DriveMode.FIELD_REVERSED){
+        setDriveMode(DriveMode.LOCAL_REVERSED);
       }
     }
     

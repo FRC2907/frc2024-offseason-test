@@ -6,6 +6,8 @@ import com.revrobotics.CANSparkBase.ControlType;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import frc.robot.constants.Control;
+import frc.robot.constants.Ports;
 import frc.robot.util.Util;
 
 public class Arm implements ISubsystem{
@@ -16,8 +18,9 @@ public class Arm implements ISubsystem{
     
     private Arm(CANSparkMax _motor){
         this.motor = _motor;
-        this.motor.getEncoder().setPositionConversionFactor(1 / frc.robot.constants.Control.arm.TICK_PER_DEGREE);
-        this.setPDGains(frc.robot.constants.Control.arm.kP, frc.robot.constants.Control.arm.kD);
+        this.motor.getEncoder().setPositionConversionFactor(1 / Control.arm.ENCODER_POS_UNIT_PER_DEGREE);
+        this.motor.getEncoder().setVelocityConversionFactor(1 / Control.arm.ENCODER_VEL_UNIT_PER_DEGREE_PER_SECOND);
+        this.setPDGains(Control.arm.kP, Control.arm.kD);
         this.NT = NetworkTableInstance.getDefault().getTable("arm");
         this.p_position = this.NT.getDoubleTopic("position").publish();
         this.p_velocity = this.NT.getDoubleTopic("velocity").publish();
@@ -27,7 +30,7 @@ public class Arm implements ISubsystem{
 
     public static Arm getInstance(){
         if (instance == null){
-            CANSparkMax motor = Util.createSparkGroup(frc.robot.constants.Ports.can.arm.MOTORS, false, true);
+            CANSparkMax motor = Util.createSparkGroup(Ports.can.arm.MOTORS, false, true);
 
             instance = new Arm(motor);
         }
@@ -40,47 +43,51 @@ public class Arm implements ISubsystem{
     }
 
     public void setSetPoint(double _setPoint){
-        this.setPoint = Util.clamp(frc.robot.constants.Control.arm.kMinPosition, _setPoint, frc.robot.constants.Control.arm.kMinPosition);
-    }
-
-    public void up(){
-        setSetPoint(setPoint + frc.robot.constants.Control.arm.kManualControlDiff);
-    }
-
-    public void down(){
-        setSetPoint(setPoint + frc.robot.constants.Control.arm.kManualControlDiff);
+        this.setPoint = Util.clamp(Control.arm.kMinPosition, _setPoint, Control.arm.kMaxPosition);
     }
 
     public boolean reachedSetPoint(){
-        return Math.abs(this.setPoint - this.motor.getEncoder().getPosition()) < frc.robot.constants.Control.arm.kPositionHysteresis
-            && Math.abs(this.motor.getEncoder().getVelocity()) < frc.robot.constants.Control.arm.kVelocityHysteresis;
+        return Math.abs(this.setPoint - this.motor.getEncoder().getPosition()) < Control.arm.kPositionHysteresis
+            && Math.abs(this.motor.getEncoder().getVelocity())                 < Control.arm.kVelocityHysteresis;
     }
+
+
+
+    public void up(){
+        setSetPoint(setPoint + Control.arm.kManualControlDiff);
+    }
+
+    public void down(){
+        setSetPoint(setPoint + Control.arm.kManualControlDiff);
+    }
+
+
 
     public void setPDGains(double P, double D){
         this.motor.getPIDController().setP(P);
         this.motor.getPIDController().setD(D);
     }
 
+
+
     public void start(){
-        this.setSetPoint(frc.robot.constants.Control.arm.kStartPosition);
+        this.setSetPoint(Control.arm.kStartPosition);
     }
-
     public void ampPosition(){
-        this.setSetPoint(frc.robot.constants.Control.arm.kAmpPosition);
+        this.setSetPoint(Control.arm.kAmpPosition);
     }
-
     public void ampShootPosition(){
-        this.setSetPoint(frc.robot.constants.Control.arm.kAmpShootPosition);
+        this.setSetPoint(Control.arm.kAmpShootPosition);
+    }
+    public void speakerPosition(){ //TODO calculate speaker position with odometry
+        this.setSetPoint(Control.arm.kSpeakerPosition);
     }
 
-    public void speakerPosition(){ //TODO calculate speaker position with odometry
-        this.setSetPoint(frc.robot.constants.Control.arm.kSpeakerPosition);
-    }
+
 
     public double getPosition(){
         return this.motor.getEncoder().getPosition();
     }
-
     public double getVelocity(){
         return this.motor.getEncoder().getVelocity();
     }
