@@ -11,7 +11,7 @@ public class Led implements ISubsystem{
     private PWMSparkMax led;
     public boolean ledRunning;
 
-    int[] array;
+    private int[] array;
 
     private Led(PWMSparkMax led){
       ledRunning = false;

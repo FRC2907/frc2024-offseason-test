@@ -10,10 +10,10 @@ import frc.robot.constants.Ports;
 
 
 public class Drivetrain extends MecanumDrive implements ISubsystem{
-    public CANSparkMax fLeftMotor;
-    public CANSparkMax rLeftMotor;
-    public CANSparkMax fRightMotor;
-    public CANSparkMax rRightMotor;
+    private CANSparkMax fLeftMotor;
+    private CANSparkMax rLeftMotor;
+    private CANSparkMax fRightMotor;
+    private CANSparkMax rRightMotor;
 
     private DriveMode mode;
     public enum DriveMode {

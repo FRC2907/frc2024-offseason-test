@@ -82,6 +82,9 @@ public class Arm implements ISubsystem{
     public void speakerPosition(){ //TODO calculate speaker position with odometry
         this.setSetPoint(Control.arm.kSpeakerPosition);
     }
+    public void holdingPosition(){
+        this.setSetPoint(Control.arm.kHoldingPosition);
+    }
 
 
 

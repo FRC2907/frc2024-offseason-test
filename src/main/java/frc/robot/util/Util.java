@@ -1,6 +1,10 @@
 
 package frc.robot.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.ctre.phoenix.motorcontrol.FollowerType;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.controls.Follower;
@@ -120,4 +124,16 @@ public class Util {
 			return max;
 		return value;
 	}
+
+  public static Double[] arrayAdd(Double arr[], double x){
+          List<Double> arrlist 
+              = new ArrayList<Double>( 
+                  Arrays.asList(arr)); 
+
+          arrlist.add(x); 
+      
+          arr = arrlist.toArray(arr); 
+      
+          return arr; 
+      } 
 }

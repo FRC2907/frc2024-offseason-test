@@ -40,6 +40,11 @@ public class Shooter implements ISubsystem{
     public void setSetPoint(double _setPoint){
         this.setPoint = _setPoint;
     }
+    public boolean reachedSetPoint(){
+        return Math.abs(this.motor.getEncoder().getVelocity()) < Control.shooter.kVelocityHysteresis;
+    }
+
+
 
     public void off(){
         this.setSetPoint(Control.shooter.kOff);
