@@ -163,21 +163,24 @@ public class Superstructure implements ISubsystem{
             arm.start();
             intake.off();
             shooter.off();
-            if (arm.reachedSetPoint())
+            if (arm.reachedSetPoint()){
                 this.state = RobotState.START;
+            }
             break;
         case START:
             break;
 
         case MOVING_TO_INTAKING:
             intake.intake();
-            if (intake.reachedSetPoint())
-                this.state = RobotState.INTAKING;
+            if (intake.reachedSetPoint()){
+              this.state = RobotState.INTAKING;
+            }
             break;
         case INTAKING:
             intake.intake();
             if (intake.hasNote()){
-                this.state = RobotState.HOLDING_NOTE;
+              shooter.noteScored = false;
+              this.state = RobotState.HOLDING_NOTE;
             }
             break;
 
@@ -196,18 +199,19 @@ public class Superstructure implements ISubsystem{
             arm.ampPosition();
             // TODO automatically drive up to the Amp
             if (arm.reachedSetPoint()) { // TODO add drivetrain reached set point
-                this.state = RobotState.READY_TO_SCORE_AMP;
+              this.state = RobotState.READY_TO_SCORE_AMP;
             }
             break;
         case READY_TO_SCORE_AMP:
-            if (this.isScoringAutomated())
-                this.state = RobotState.SCORING_AMP;
+            if (this.isScoringAutomated()){
+              this.state = RobotState.SCORING_AMP;
+            }
             break;
         case SCORING_AMP:
             shooter.amp();
             if (shooter.noteScored()){
-                intake.hasNote = false;
-                this.state = RobotState.NEUTRAL;
+              intake.hasNote = false;
+              this.state = RobotState.NEUTRAL;
             }
             break;
 
@@ -215,19 +219,19 @@ public class Superstructure implements ISubsystem{
             arm.speakerPosition();
             // TODO automatically drive up to the Speaker
             if (arm.reachedSetPoint()) { // TODO add drivetrain reached set point
-                // TODO do we also want to get the shooter wheels up to speed first? or no?
-                this.state = RobotState.READY_TO_SCORE_SPEAKER;
+              // TODO do we also want to get the shooter wheels up to speed first? or no?
+              this.state = RobotState.READY_TO_SCORE_SPEAKER;
             }
             break;
         case READY_TO_SCORE_SPEAKER:
             if (this.isScoringAutomated())
-                this.state = RobotState.SCORING_SPEAKER;
+              this.state = RobotState.SCORING_SPEAKER;
             break;
         case SCORING_SPEAKER:
             shooter.speaker();
             if (shooter.noteScored()) { 
-                intake.hasNote = false;
-                this.state = RobotState.NEUTRAL;
+              intake.hasNote = false;
+              this.state = RobotState.NEUTRAL;
             }
             break;
 

@@ -3,6 +3,7 @@ package frc.robot.constants;
 import frc.robot.subsystems.Drivetrain.DriveMode;
 
 public class Control {
+    public static final double kZeroHysteresis = 2;
     
     public static class arm { //TODO arm control constants
         public static final double ENCODER_POS_UNIT_PER_DEGREE = 0; // tick/deg
@@ -31,6 +32,7 @@ public class Control {
 
     public static class intake { //TODO intake control constants
         public static final double ENCODER_VEL_UNIT_PER_INTAKE_MPS = 0;
+        public static final double ENCODER_AMPS_PER_INTAKE_MPS = 0;
 
         public static final double kP = 1;
         public static final double kD = 1;

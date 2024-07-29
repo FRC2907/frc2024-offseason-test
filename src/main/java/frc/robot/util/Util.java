@@ -12,6 +12,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import frc.robot.constants.Control;
+
 
 
 public class Util {
@@ -156,7 +158,7 @@ public class Util {
   public static double arrayAverage(Double arr[]){
     double total;
     total = 0;
-    if (arr[arr.length] == 0){
+    if (Math.abs(arr[arr.length]) < Control.kZeroHysteresis){
       return arr[arr.length];
     }
     for (int i = 0; i < arr.length; i++){

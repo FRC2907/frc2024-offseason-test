@@ -12,7 +12,8 @@ import frc.robot.util.Util;
 
 public class Shooter implements ISubsystem{
     private double setPoint;
-    private boolean noteScored;
+    
+    public boolean noteScored;
 
     private CANSparkMax motor;
     private NetworkTable NT;
@@ -21,7 +22,7 @@ public class Shooter implements ISubsystem{
     private Shooter(CANSparkMax _motor){
         motor = _motor;
         this.motor.getEncoder().setVelocityConversionFactor(1 / Control.shooter.ENCODER_VEL_UNIT_PER_SHOOTER_MPS);
-        this.noteScored = true;
+        this.noteScored = false;
         this.NT = NetworkTableInstance.getDefault().getTable("shooter");
         this.p_velocity = this.NT.getDoubleTopic("velocity").publish();
     }

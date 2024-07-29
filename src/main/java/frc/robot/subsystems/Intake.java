@@ -23,7 +23,7 @@ public class Intake implements ISubsystem{
     private DoublePublisher p_velocity;
 
     private Intake(CANSparkMax _motor){ //TODO add velocity conversion factor to other motor
-      motor = _motor;
+      this.motor = _motor;
       _motor.setInverted(true);
 
       averageCurrent = Control.intake.kAverageCurrent;
@@ -63,7 +63,11 @@ public class Intake implements ISubsystem{
     }
 
 
-
+    public boolean getCurrentSpike(){
+      return Control.intake.ENCODER_AMPS_PER_INTAKE_MPS * Math.abs(this.averageCurrent) 
+                                                        - Math.abs(this.setPoint) 
+           < Control.intake.kCurrentHystereis;
+    }
     public void intake(){
       this.setSetPoint(Control.intake.kIntakingSpeed);
     }
@@ -84,19 +88,13 @@ public class Intake implements ISubsystem{
     } 
 
     public void currentDetection(){
-      if (this.motor.getOutputCurrent() - this.averageCurrent > Control.intake.kCurrentHystereis){
+      if (getCurrentSpike()){
         this.hasNote = true;
       } else {
-        //this.hasNote = false;
         this.head += 1;
         this.head %= currentOutputArr.length;
-        Util.arrayReplace(currentOutputArr, head, this.motor.getOutputCurrent());
-        //Util.arrayAdd(currentOutputArr, this.motor.getOutputCurrent());
-        Util.arrayAverage(currentOutputArr);
-        /*for (int i = 0; i < currentOutputArr.length; i++){
-          this.totalCurrent += currentOutputArr[i];
-        }
-        this.averageCurrent = this.totalCurrent / currentOutputArr.length;*/
+        this.currentOutputArr = Util.arrayReplace(currentOutputArr, head, this.motor.getOutputCurrent());
+        this.averageCurrent   = Util.arrayAverage(currentOutputArr);
       }
     }
 
