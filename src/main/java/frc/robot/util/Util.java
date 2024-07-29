@@ -66,6 +66,8 @@ public class Util {
       }
   }
 
+
+
   public static TalonFX createTalonFXGroup(int[] ids, boolean invWhole, boolean invIndividual) {
 		if (ids.length == 0) {
 			System.err.println("[EE] Attempted to create empty group of TalonFX");
@@ -80,7 +82,6 @@ public class Util {
 		mcs[0].setInverted(invWhole);
 		return mcs[0];
 	}
-
   public static TalonSRX createTalonSRXGroup(int[] ids, boolean invWhole, boolean invIndividual) {
 		if (ids.length == 0) {
 			System.err.println("[EE] Attempted to create empty group of TalonSRX");
@@ -96,7 +97,6 @@ public class Util {
 		mcs[0].setInverted(invWhole);
 		return mcs[0];
 	}
-
   public static CANSparkMax createSparkGroup(int[] ids, boolean invWhole, boolean invIndividual) {
 		if (ids.length == 0) {
 			System.err.println("[EE] Attempted to create empty group of CANSparkMax");
@@ -113,6 +113,8 @@ public class Util {
 		return mcs[0];
   }
 
+
+
   public static double clamp(double min, double value, double max) {
 		if (max < min) { 
 			System.err.println("[EE] I was asked to clamp value " + value + " between min " + min + " and max " + max);
@@ -125,15 +127,43 @@ public class Util {
 		return value;
 	}
 
-  public static Double[] arrayAdd(Double arr[], double x){
-          List<Double> arrlist 
-              = new ArrayList<Double>( 
-                  Arrays.asList(arr)); 
 
-          arrlist.add(x); 
+
+  public static Double[] arrayPlus(Double arr[], double input){
+    List<Double> arrlist 
+        = new ArrayList<Double>( 
+            Arrays.asList(arr)); 
+
+    arrlist.add(input); 
       
-          arr = arrlist.toArray(arr); 
+    arr = arrlist.toArray(arr); 
       
-          return arr; 
-      } 
+    return arr; 
+  } 
+  public static Double[] arrayAdd(Double arr[], double input){
+    for (int i = 0; i < arr.length; i++){
+      if (arr[i].isNaN()){
+        arr[i] = input;
+        return arr;
+      }
+    }
+    return arr;
+  }
+  public static Double[] arrayReplace(Double arr[], int position, double input){
+    arr[position] = input;
+    return arr;
+  }
+  public static double arrayAverage(Double arr[]){
+    double total;
+    total = 0;
+    if (arr[arr.length] == 0){
+      return arr[arr.length];
+    }
+    for (int i = 0; i < arr.length; i++){
+      if (!(arr[i] == 0)){
+        total += arr[i];
+      }
+    }
+    return total / arr.length;
+  }
 }

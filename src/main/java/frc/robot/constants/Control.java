@@ -16,6 +16,7 @@ public class Control {
         public static final double kSpeakerPosition = 30;
         public static final double kIntakePosition = 30;
         public static final double kHoldingPosition = 50;
+        public static final double kNeutralPosition = 30;
         public static final double kMinPosition = 0;
         public static final double kMaxPosition = 100;
 
@@ -38,8 +39,11 @@ public class Control {
         public static final double kOff = 0;
         public static final double kOutakingSpeed = -60;
         public static final double kVelocityHysteresis = 2;
+        public static final double kOnHysteresis = 3;
         public static final double kAverageCurrent = 0;
         public static final double kCurrentHystereis = 2;
+
+        public static final int kArrayLength = 50;
     }
 
     public static class shooter { //TODO shooter control constants

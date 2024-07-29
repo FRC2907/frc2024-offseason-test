@@ -85,6 +85,9 @@ public class Arm implements ISubsystem{
     public void holdingPosition(){
         this.setSetPoint(Control.arm.kHoldingPosition);
     }
+    public void neutralPosition(){
+        this.setSetPoint(Control.arm.kNeutralPosition);
+    }
 
 
 

@@ -183,6 +183,9 @@ public class Superstructure implements ISubsystem{
 
         case OUTAKING:
             intake.outake();
+            if (!intake.hasNote()){
+              this.state = RobotState.NEUTRAL;
+            }
             break;
         case HOLDING_NOTE:
             arm.holdingPosition();
@@ -202,9 +205,10 @@ public class Superstructure implements ISubsystem{
             break;
         case SCORING_AMP:
             shooter.amp();
-            //if (shooter.noteScored()){ //TODO add note scored function
+            if (shooter.noteScored()){
+                intake.hasNote = false;
                 this.state = RobotState.NEUTRAL;
-            //}
+            }
             break;
 
         case MOVING_TO_SPEAKER:
@@ -221,12 +225,14 @@ public class Superstructure implements ISubsystem{
             break;
         case SCORING_SPEAKER:
             shooter.speaker();
-            //if (shooter.noteScored()) { //TODO add note scored function
+            if (shooter.noteScored()) { 
+                intake.hasNote = false;
                 this.state = RobotState.NEUTRAL;
-            //}
+            }
             break;
+
         case NEUTRAL:
-            arm.holdingPosition();
+            arm.neutralPosition();
             intake.off();
             shooter.off();
             break;

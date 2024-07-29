@@ -13,7 +13,7 @@ import frc.robot.util.Util;
 public class Intake implements ISubsystem{
     private double setPoint;
     private double averageCurrent;
-    private double totalCurrent;
+    private int head;
     private Double[] currentOutputArr;
 
     public boolean hasNote;
@@ -27,8 +27,13 @@ public class Intake implements ISubsystem{
       _motor.setInverted(true);
 
       averageCurrent = Control.intake.kAverageCurrent;
-      currentOutputArr = new Double[1];
-      currentOutputArr[1] = averageCurrent;
+      currentOutputArr = new Double[Control.intake.kArrayLength];
+      for (int i = 0; i < currentOutputArr.length; i++){
+        currentOutputArr[i] = averageCurrent;
+      }
+      head = 0;
+
+      hasNote = false;
 
       this.NT = NetworkTableInstance.getDefault().getTable("intake");
       this.p_velocity = this.NT.getDoubleTopic("velocity").publish();
@@ -68,6 +73,12 @@ public class Intake implements ISubsystem{
     public void off(){
       this.setSetPoint(Control.intake.kOff);
     }
+    public boolean isOn(){
+      return Math.abs(this.motor.getEncoder().getVelocity()) > Control.intake.kOnHysteresis;
+    }
+    public boolean isOff(){
+      return Math.abs(this.motor.getEncoder().getVelocity()) < Control.intake.kOnHysteresis;
+    }
     public boolean hasNote(){
       return this.hasNote; //Read sensor or use current detection
     } 
@@ -76,12 +87,16 @@ public class Intake implements ISubsystem{
       if (this.motor.getOutputCurrent() - this.averageCurrent > Control.intake.kCurrentHystereis){
         this.hasNote = true;
       } else {
-        this.hasNote = false;
-        Util.arrayAdd(currentOutputArr, this.motor.getOutputCurrent());
-        for (int i = 0; i < currentOutputArr.length; i++){
+        //this.hasNote = false;
+        this.head += 1;
+        this.head %= currentOutputArr.length;
+        Util.arrayReplace(currentOutputArr, head, this.motor.getOutputCurrent());
+        //Util.arrayAdd(currentOutputArr, this.motor.getOutputCurrent());
+        Util.arrayAverage(currentOutputArr);
+        /*for (int i = 0; i < currentOutputArr.length; i++){
           this.totalCurrent += currentOutputArr[i];
         }
-        this.averageCurrent = this.totalCurrent / currentOutputArr.length;
+        this.averageCurrent = this.totalCurrent / currentOutputArr.length;*/
       }
     }
 
