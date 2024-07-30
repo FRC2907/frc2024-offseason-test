@@ -178,7 +178,7 @@ public class Superstructure implements ISubsystem{
             break;
         case INTAKING:
             intake.intake();
-            if (intake.hasNote()){
+            if (intake.hasNote()){ //TODO possibly add a timer here to make sure it goes all the way?
               shooter.noteScored = false;
               this.state = RobotState.HOLDING_NOTE;
             }

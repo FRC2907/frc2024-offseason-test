@@ -122,10 +122,8 @@ public class Util {
 			System.err.println("[EE] I was asked to clamp value " + value + " between min " + min + " and max " + max);
 			new Exception().printStackTrace();
 		}
-		if (value < min)
-			return min;
-		if (max < value)
-			return max;
+		if (value < min) return min;
+		if (max < value) return max;
 		return value;
 	}
 

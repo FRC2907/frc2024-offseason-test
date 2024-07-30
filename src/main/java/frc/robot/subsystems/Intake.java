@@ -43,7 +43,7 @@ public class Intake implements ISubsystem{
 
     public static Intake getInstance(){
       if (instance == null){
-        CANSparkMax motor = Util.createSparkGroup(Ports.can.intake.MOTORS, false, true);
+        CANSparkMax motor = Util.createSparkGroup(Ports.CAN.intake.MOTORS, false, true);
         instance = new Intake(motor);
       }
       return instance;
@@ -84,10 +84,10 @@ public class Intake implements ISubsystem{
       return Math.abs(this.motor.getEncoder().getVelocity()) < Control.intake.kOnHysteresis;
     }
     public boolean hasNote(){
-      return this.hasNote; //Read sensor or use current detection
+      return this.hasNote; 
     } 
 
-    public void currentDetection(){
+    public void currentDetection(){ //TODO test
       if (getCurrentSpike()){
         this.hasNote = true;
       } else {

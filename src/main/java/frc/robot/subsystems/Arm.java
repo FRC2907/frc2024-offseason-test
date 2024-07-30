@@ -30,22 +30,17 @@ public class Arm implements ISubsystem{
 
     public static Arm getInstance(){
         if (instance == null){
-            CANSparkMax motor = Util.createSparkGroup(Ports.can.arm.MOTORS, false, true);
+            CANSparkMax motor = Util.createSparkGroup(Ports.CAN.arm.MOTORS, false, true);
 
             instance = new Arm(motor);
         }
         return instance;
     }
 
-    @Override
-    public void onLoop(){
-        this.motor.getPIDController().setReference(this.setPoint, ControlType.kPosition);
-    }
 
     public void setSetPoint(double _setPoint){
         this.setPoint = Util.clamp(Control.arm.kMinPosition, _setPoint, Control.arm.kMaxPosition);
     }
-
     public boolean reachedSetPoint(){
         return Math.abs(this.setPoint - this.motor.getEncoder().getPosition()) < Control.arm.kPositionHysteresis
             && Math.abs(this.motor.getEncoder().getVelocity())                 < Control.arm.kVelocityHysteresis;
@@ -56,20 +51,9 @@ public class Arm implements ISubsystem{
     public void up(){
         setSetPoint(setPoint + Control.arm.kManualControlDiff);
     }
-
     public void down(){
         setSetPoint(setPoint + Control.arm.kManualControlDiff);
     }
-
-
-
-    public void setPDGains(double P, double D){
-        this.motor.getPIDController().setP(P);
-        this.motor.getPIDController().setD(D);
-    }
-
-
-
     public void start(){
         this.setSetPoint(Control.arm.kStartPosition);
     }
@@ -89,13 +73,23 @@ public class Arm implements ISubsystem{
         this.setSetPoint(Control.arm.kNeutralPosition);
     }
 
-
-
     public double getPosition(){
         return this.motor.getEncoder().getPosition();
     }
     public double getVelocity(){
         return this.motor.getEncoder().getVelocity();
+    }
+
+    public void setPDGains(double P, double D){
+        this.motor.getPIDController().setP(P);
+        this.motor.getPIDController().setD(D);
+    }
+
+
+
+    @Override
+    public void onLoop(){
+        this.motor.getPIDController().setReference(this.setPoint, ControlType.kPosition);
     }
 
 

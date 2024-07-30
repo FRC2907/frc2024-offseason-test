@@ -58,5 +58,7 @@ public class Control {
         public static final double kAmpSpeed = 30;
         public static final double kOff = 0;
         public static final double kVelocityHysteresis = 2;
+        public static final double kAverageCurrent = 0;
+        public static final double kCurrentHystereis = 2;
     }
 }

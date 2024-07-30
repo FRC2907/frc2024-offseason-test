@@ -12,7 +12,10 @@ import frc.robot.util.Util;
 
 public class Shooter implements ISubsystem{
     private double setPoint;
-    
+
+    private Double[] currentOutputArr;
+    private double averageCurrent;
+    private int head;
     public boolean noteScored;
 
     private CANSparkMax motor;
@@ -20,9 +23,16 @@ public class Shooter implements ISubsystem{
     private DoublePublisher p_velocity;
 
     private Shooter(CANSparkMax _motor){
-        motor = _motor;
+        this.motor = _motor;
         this.motor.getEncoder().setVelocityConversionFactor(1 / Control.shooter.ENCODER_VEL_UNIT_PER_SHOOTER_MPS);
+
         this.noteScored = false;
+        this.head = 0;
+        this.averageCurrent = Control.shooter.kAverageCurrent;
+        for (int i = 0; i < currentOutputArr.length; i++){
+            currentOutputArr[i] = averageCurrent;
+          }
+
         this.NT = NetworkTableInstance.getDefault().getTable("shooter");
         this.p_velocity = this.NT.getDoubleTopic("velocity").publish();
     }
@@ -31,7 +41,7 @@ public class Shooter implements ISubsystem{
 
     public static Shooter getInstance(){
         if (instance == null){
-            CANSparkMax motor = Util.createSparkGroup(Ports.can.shooter.MOTORS, false, true);
+            CANSparkMax motor = Util.createSparkGroup(Ports.CAN.shooter.MOTORS, false, true);
 
             instance = new Shooter(motor);
         }
@@ -48,7 +58,11 @@ public class Shooter implements ISubsystem{
     }
 
 
-
+    public boolean getCurrentSpike(){
+        return Control.intake.ENCODER_AMPS_PER_INTAKE_MPS * Math.abs(this.averageCurrent) 
+                                                          - Math.abs(this.setPoint) 
+             < Control.intake.kCurrentHystereis;
+    }
     public void off(){
         this.setSetPoint(Control.shooter.kOff);
     }
@@ -64,6 +78,17 @@ public class Shooter implements ISubsystem{
     }
     public boolean noteScored(){
         return this.noteScored;
+    }
+
+    public void currentDetection(){
+        if (getCurrentSpike()){
+          this.noteScored = true;
+        } else {
+          this.head += 1;
+          this.head %= currentOutputArr.length;
+          this.currentOutputArr = Util.arrayReplace(currentOutputArr, head, this.motor.getOutputCurrent());
+          this.averageCurrent   = Util.arrayAverage(currentOutputArr);
+        }
     }
     
     

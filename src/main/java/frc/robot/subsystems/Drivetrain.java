@@ -38,10 +38,10 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
     public static Drivetrain getInstance(){
       CANSparkMax frontLeft, rearLeft, frontRight, rearRight;
       if (instance == null){
-        frontLeft = new CANSparkMax(Ports.can.drivetrain.FRONT_LEFT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-        rearLeft = new CANSparkMax(Ports.can.drivetrain.REAR_LEFT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-        frontRight = new CANSparkMax(Ports.can.drivetrain.FRONT_RIGHT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-        rearRight = new CANSparkMax(Ports.can.drivetrain.REAR_RIGHT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+        frontLeft = new CANSparkMax(Ports.CAN.drivetrain.FRONT_LEFT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+        rearLeft = new CANSparkMax(Ports.CAN.drivetrain.REAR_LEFT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+        frontRight = new CANSparkMax(Ports.CAN.drivetrain.FRONT_RIGHT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+        rearRight = new CANSparkMax(Ports.CAN.drivetrain.REAR_RIGHT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
         instance = new Drivetrain(frontLeft, rearLeft, frontRight, rearRight);
       }
       return instance;
