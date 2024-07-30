@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -31,9 +32,8 @@ public class Intake implements ISubsystem{
       for (int i = 0; i < currentOutputArr.length; i++){
         currentOutputArr[i] = averageCurrent;
       }
-      head = 0;
-
-      hasNote = false;
+      this.head = 0;
+      this.hasNote = false;
 
       this.NT = NetworkTableInstance.getDefault().getTable("intake");
       this.p_velocity = this.NT.getDoubleTopic("velocity").publish();

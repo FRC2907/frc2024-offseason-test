@@ -13,10 +13,10 @@ public class MechanismDimensions {
     }
 
     public static class intake {
-        public static final double WHEEL_DIAMETER = 3;
+        public static final double WHEEL_DIAMETER = 2;
     }
 
     public static class shooter {
-        public static final double WHEEL_DIAMETER = 4;
+        public static final double WHEEL_DIAMETER = 4; //TODO find diameter
     }
 }
