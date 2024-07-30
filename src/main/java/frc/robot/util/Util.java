@@ -155,15 +155,19 @@ public class Util {
   }
   public static double arrayAverage(Double arr[]){
     double total;
+    double count;
     total = 0;
+    count = arr.length;
     if (Math.abs(arr[arr.length]) < Control.kZeroHysteresis){
       return arr[arr.length];
     }
     for (int i = 0; i < arr.length; i++){
-      if (!(arr[i] == 0)){
+      if (!(arr[i] < Control.kZeroHysteresis)){
         total += arr[i];
+      } else {
+        count -= 1;
       }
     }
-    return total / arr.length;
+    return total / count;
   }
 }
