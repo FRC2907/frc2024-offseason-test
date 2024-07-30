@@ -4,6 +4,8 @@ import frc.robot.subsystems.Drivetrain.DriveMode;
 
 public class Control {
     public static final double kZeroHysteresis = 2;
+    public static final double kInchesToMeters = 1 / 39.3701;
+    public static final double kInchesPerMinuteToMetersPerSecond = 1 / (60 /*seconds*/ * kInchesToMeters);
     
     public static class arm { //TODO arm control constants
         public static final double ENCODER_POS_UNIT_PER_DEGREE = 0; // tick/deg
@@ -28,12 +30,20 @@ public class Control {
 
     public static class drivetrain {
         public static final DriveMode kDefaultDriveMode = DriveMode.LOCAL_FORWARD;
+
+        public static final double kVelocityConversionFactor = 
+                            MechanismDimensions.drivetrain.WHEEL_DIAMETER * Math.PI 
+                          * kInchesPerMinuteToMetersPerSecond;
+                        
     }
 
     public static class intake { //TODO intake control constants
         public static final double ENCODER_VEL_UNIT_PER_INTAKE_MPS = 0;
         public static final double ENCODER_AMPS_PER_INTAKE_MPS = 0;
 
+        public static final double kVelocityConversionFactor = 
+                            MechanismDimensions.intake.WHEEL_DIAMETER * Math.PI
+                          * kInchesPerMinuteToMetersPerSecond;
         public static final double kP = 1;
         public static final double kD = 1;
 
@@ -51,6 +61,9 @@ public class Control {
     public static class shooter { //TODO shooter control constants
         public static final double ENCODER_VEL_UNIT_PER_SHOOTER_MPS = 0;
 
+        public static final double kVelocityConversionFactor = 
+                            MechanismDimensions.shooter.WHEEL_DIAMETER * Math.PI
+                          * kInchesPerMinuteToMetersPerSecond;
         public static final double kP = 1;
         public static final double kD = 1;
 

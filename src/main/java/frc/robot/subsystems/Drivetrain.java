@@ -4,6 +4,7 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import frc.robot.constants.Control;
 import frc.robot.constants.Ports;
 
 
@@ -38,10 +39,16 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
     public static Drivetrain getInstance(){
       CANSparkMax frontLeft, rearLeft, frontRight, rearRight;
       if (instance == null){
-        frontLeft = new CANSparkMax(Ports.CAN.drivetrain.FRONT_LEFT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-        rearLeft = new CANSparkMax(Ports.CAN.drivetrain.REAR_LEFT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+        frontLeft  = new CANSparkMax(Ports.CAN.drivetrain.FRONT_LEFT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+        rearLeft   = new CANSparkMax(Ports.CAN.drivetrain.REAR_LEFT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
         frontRight = new CANSparkMax(Ports.CAN.drivetrain.FRONT_RIGHT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-        rearRight = new CANSparkMax(Ports.CAN.drivetrain.REAR_RIGHT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+        rearRight  = new CANSparkMax(Ports.CAN.drivetrain.REAR_RIGHT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+
+        frontLeft. getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
+        rearLeft.  getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
+        frontRight.getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
+        rearRight. getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
+
         instance = new Drivetrain(frontLeft, rearLeft, frontRight, rearRight);
       }
       return instance;
@@ -87,10 +94,10 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
       this.pose = _pose;
     }
 
-    @Override
-    public void onLoop(){}
 
     
+    @Override
+    public void onLoop(){}
 
     @Override
     public void submitTelemetry(){}

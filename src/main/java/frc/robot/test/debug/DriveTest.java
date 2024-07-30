@@ -1,12 +1,14 @@
 package frc.robot.test.debug;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import frc.robot.constants.Control;
 
 public class DriveTest extends TimedRobot{
     int i_top_left = 1, i_bottom_left = 2, i_top_right = 3, i_bottom_right = 4;
@@ -34,6 +36,11 @@ public class DriveTest extends TimedRobot{
         top_right.setInverted(true);
         bottom_right.setInverted(true);
 
+        top_left.getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
+        bottom_left.getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
+        top_right.getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
+        bottom_right.getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
+
         dt = new MecanumDrive(top_left, bottom_left, top_right, bottom_right);
     }
 
@@ -44,6 +51,21 @@ public class DriveTest extends TimedRobot{
             bottom_left.set(0.1);
             top_right.set(0.1);
             bottom_right.set(0.1);
+        }
+    }
+
+    @Override
+    public void autonomousInit(){
+        timer.restart();
+    }
+
+    @Override
+    public void autonomousPeriodic(){ //test m/s
+        if (timer.get() < 1){
+            top_left.getPIDController().setReference(1, ControlType.kVelocity);
+            bottom_left.getPIDController().setReference(1, ControlType.kVelocity);
+            top_right.getPIDController().setReference(1, ControlType.kVelocity);
+            bottom_right.getPIDController().setReference(1, ControlType.kVelocity);
         }
     }
 
