@@ -71,7 +71,7 @@ public class DriveTest extends TimedRobot{
 
     @Override
     public void teleopPeriodic(){
-        dt.driveCartesian(driver.getLeftX(), driver.getLeftY(), driver.getRightX());
-        //breakIn();  //use to break in motors for 30 minutes
+        //dt.driveCartesian(driver.getLeftX(), driver.getLeftY(), driver.getRightX());
+        breakIn();  //use to break in motors for 30 minutes
     }
 }

@@ -60,6 +60,10 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
   
     public DriveMode getDriveMode(){ return this.mode; }
 
+    public void setFieldDriveInputs(){
+      //TODO add
+    }
+
     public void reverse(){
       if (mode == DriveMode.LOCAL_FORWARD){
         setDriveMode(DriveMode.LOCAL_REVERSED);

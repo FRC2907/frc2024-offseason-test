@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.constants.Control;
+import frc.robot.constants.MechanismConstraints;
 
 
 
@@ -169,5 +170,9 @@ public class Util {
       }
     }
     return total / count;
+  }
+
+  public static boolean checkDriverDeadband(double value){
+    return Math.abs(value) > MechanismConstraints.kDriverDeadband;
   }
 }
