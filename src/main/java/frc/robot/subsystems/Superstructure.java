@@ -1,9 +1,8 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
-
 import edu.wpi.first.math.proto.Trajectory;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import frc.robot.subsystems.Drivetrain.DriveMode;
 import edu.wpi.first.wpilibj.PS5Controller;
 
 
@@ -118,37 +117,45 @@ public class Superstructure implements ISubsystem{
 
 
 
-    private void handleDriving(CANSparkMax leftMotor, CANSparkMax rightMotor){
-        double left;
-        double right;
-        double speed = driver.getLeftY();
-        double rotation = -driver.getRightX();
+    private void handleDriving(){
+      switch (state) {
+        case MOVING_TO_START:
+        case START:
+        case NEUTRAL:
+        case MOVING_TO_HOLDING_NOTE:
+        case HOLDING_NOTE:
+        case INTAKING:
+        case OUTAKING:
     
         switch(drivetrain.getDriveMode()){
           case AUTO:
-          case LOCAL_FORWARD:
-            break;
-          case LOCAL_REVERSED:
-            speed = -speed;
-            break;
           case FIELD_FORWARD:
+            drivetrain.setFieldDriveInputs();
             break;
           case FIELD_REVERSED:
             break;
+          case LOCAL_FORWARD:
+            break;
+          case LOCAL_REVERSED:
+            break;
+          default:
+            break;
         }
+        break;
     
-        left = speed + rotation;
+        /*left = speed + rotation;
         right = speed - rotation;
     
         if (left > 1.0 || left < -1.0) { right = right / Math.abs(left); left = left / Math.abs(left); }
         if (right > 1.0 || right < -1.0) { left = left / Math.abs(right); right = right / Math.abs(right); }
     
         left = left / 4;
-        right = right / 4;
+        right = right / 4; */
 
-        leftMotor.set(left);
-        rightMotor.set(right);
-      } 
+        default:
+          drivetrain.setDriveMode(DriveMode.AUTO);
+      }
+    } 
 
     private void handleInputs(){ //TODO change to reference states
       if (driver.getCircleButtonPressed() || operator.getCircleButtonPressed()){
@@ -197,7 +204,7 @@ public class Superstructure implements ISubsystem{
       if (operator.getL2Button()){ 
         intake.intake();
       }
-  }
+    }
 
     @Override
     public void onLoop(){
@@ -288,7 +295,7 @@ public class Superstructure implements ISubsystem{
       }
 
 
-      //handleDriving(drivetrain.leftMotor, drivetrain.rightMotor);
+      handleDriving();
       handleInputs();
 
       for (ISubsystem s : this.subsystems){
