@@ -130,7 +130,7 @@ public class Superstructure implements ISubsystem{
         switch(drivetrain.getDriveMode()){
           case AUTO:
           case FIELD_FORWARD:
-            drivetrain.setFieldDriveInputs();
+            drivetrain.setFieldDriveInputs(driver.getLeftY(), driver.getLeftX(), driver.getRightX());
             break;
           case FIELD_REVERSED:
             break;

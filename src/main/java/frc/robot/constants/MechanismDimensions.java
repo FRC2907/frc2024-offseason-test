@@ -1,5 +1,9 @@
 package frc.robot.constants;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
+import edu.wpi.first.units.Units;
+
 public class MechanismDimensions {
     
     public static class electrical {
@@ -12,6 +16,15 @@ public class MechanismDimensions {
 
     public static class drivetrain {
         public static final double WHEEL_DIAMETER = 8; //inches
+
+        //22.875 in. edge to edge wide, 20.5 in. edge to edge long
+        public static final Translation2d FRONT_LEFT_LOCATION  = new Translation2d(Units.Meters.of(0.26035), Units.Meters.of(0.2905125));
+        public static final Translation2d REAR_LEFT_LOCATION   = new Translation2d(Units.Meters.of(-0.26035), Units.Meters.of(0.2905125));
+        public static final Translation2d FRONT_RIGHT_LOCATION = new Translation2d(Units.Meters.of(0.26035), Units.Meters.of(-0.2905125));
+        public static final Translation2d REAR_RIGHT_LOCATION  = new Translation2d(Units.Meters.of(-0.26035), Units.Meters.of(-0.2905125));
+
+        public static final MecanumDriveKinematics DRIVE_KINEMATICS = new MecanumDriveKinematics(
+            FRONT_LEFT_LOCATION, FRONT_RIGHT_LOCATION, REAR_LEFT_LOCATION, REAR_RIGHT_LOCATION);
     }
 
     public static class intake {
