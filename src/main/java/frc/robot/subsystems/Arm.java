@@ -60,11 +60,11 @@ public class Arm implements ISubsystem{
     public void ampPosition(){
         this.setSetPoint(Control.arm.kAmpPosition);
     }
-    public void ampShootPosition(){
-        this.setSetPoint(Control.arm.kAmpShootPosition);
+    public void wingPosition(){ //TODO calculate speaker position with odometry
+        this.setSetPoint(Control.arm.kWingPosition);
     }
-    public void speakerPosition(){ //TODO calculate speaker position with odometry
-        this.setSetPoint(Control.arm.kSpeakerPosition);
+    public void subwooferPosition(){ //TODO calculate speaker position with odometry
+        this.setSetPoint(Control.arm.kSubwooferPosition);
     }
     public void holdingPosition(){
         this.setSetPoint(Control.arm.kHoldingPosition);

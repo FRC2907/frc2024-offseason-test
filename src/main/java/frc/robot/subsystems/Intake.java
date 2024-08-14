@@ -64,7 +64,7 @@ public class Intake implements ISubsystem{
 
 
     public boolean getCurrentSpike(){
-      return Control.intake.ENCODER_AMPS_PER_INTAKE_MPS * Math.abs(this.averageCurrent) 
+      return Control.intake.ENCODER_AMPS_PER_INTAKE_MPS * Math.abs(this.averageCurrent) //consider changing this to just the last current output
                                                         - Math.abs(this.setPoint) 
            < Control.intake.kCurrentHystereis;
     }
@@ -73,6 +73,9 @@ public class Intake implements ISubsystem{
     }
     public void outake(){
       this.setSetPoint(Control.intake.kOutakingSpeed);
+    }
+    public void shoot(){
+      this.setSetPoint(Control.intake.kShoot);
     }
     public void off(){
       this.setSetPoint(Control.intake.kOff);

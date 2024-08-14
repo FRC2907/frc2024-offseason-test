@@ -151,8 +151,51 @@ public class Superstructure implements ISubsystem{
       } 
 
     private void handleInputs(){ //TODO change to reference states
+      if (driver.getCircleButtonPressed() || operator.getCircleButtonPressed()){
+        cancelAction();
+      }
+
+
+
+      if (driver.getCrossButtonPressed()){
+        moveToIntaking();
+      }
+      if (driver.getR2ButtonPressed()){
+        moveToSpeaker();
+      }
+      if (driver.getL2ButtonPressed()){
+        moveToAmp();
+      }
       if (driver.getR1ButtonPressed()){
-      drivetrain.reverse();
+        drivetrain.reverse();
+      }
+      if (driver.getL1ButtonPressed()){
+        drivetrain.localFieldSwitch();
+      }
+
+      if (operator.getSquareButton()){
+        shooter.speaker();
+        if (shooter.reachedSetPoint()){
+            intake.shoot();
+        }
+      }
+      if (operator.getTriangleButtonPressed()){
+        neutralPosition();
+      }
+      if (operator.getR2Button()){
+        shooter.manualShoot();
+      }
+      if (operator.getR2ButtonReleased()){
+        intake.shoot();
+      }
+      if (operator.getR1ButtonPressed()){
+        outakeNote();
+      }
+      if (operator.getL1ButtonPressed()){
+        intake.off();
+      }
+      if (operator.getL2Button()){ 
+        intake.intake();
       }
   }
 
@@ -216,7 +259,7 @@ public class Superstructure implements ISubsystem{
             break;
 
         case MOVING_TO_SPEAKER:
-            arm.speakerPosition();
+            arm.subwooferPosition();
             // TODO automatically drive up to the Speaker
             if (arm.reachedSetPoint()) { // TODO add drivetrain reached set point
               // TODO do we also want to get the shooter wheels up to speed first? or no?

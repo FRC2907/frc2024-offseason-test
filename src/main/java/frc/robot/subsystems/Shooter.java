@@ -72,6 +72,9 @@ public class Shooter implements ISubsystem{
     public void speaker(){
         this.setSetPoint(Control.shooter.kSpeakerSpeed);
     }
+    public void manualShoot(){
+        this.setSetPoint(Control.shooter.kMaxSpeed);
+    }
 
     public double getVelocity(){
         return this.motor.getEncoder().getVelocity();

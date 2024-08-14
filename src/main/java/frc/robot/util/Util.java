@@ -159,7 +159,7 @@ public class Util {
     total = 0;
     count = arr.length;
     if (Math.abs(arr[arr.length]) < Control.kZeroHysteresis){
-      return arr[arr.length];
+      return 0;
     }
     for (int i = 0; i < arr.length; i++){
       if (!(arr[i] < Control.kZeroHysteresis)){
