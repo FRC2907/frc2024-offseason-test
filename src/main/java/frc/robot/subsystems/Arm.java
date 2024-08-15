@@ -3,9 +3,6 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
 
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.constants.Control;
 import frc.robot.constants.Ports;
 import frc.robot.util.Util;
@@ -13,17 +10,12 @@ import frc.robot.util.Util;
 public class Arm implements ISubsystem{
     private double setPoint;
     private CANSparkMax motor;
-    private NetworkTable NT;
-    private DoublePublisher p_position, p_velocity;
     
     private Arm(CANSparkMax _motor){
         this.motor = _motor;
         this.motor.getEncoder().setPositionConversionFactor(1 / Control.arm.ENCODER_POS_UNIT_PER_DEGREE);
         this.motor.getEncoder().setVelocityConversionFactor(1 / Control.arm.ENCODER_VEL_UNIT_PER_DEGREE_PER_SECOND);
         this.setPDGains(Control.arm.kP, Control.arm.kD);
-        this.NT = NetworkTableInstance.getDefault().getTable("arm");
-        this.p_position = this.NT.getDoubleTopic("position").publish();
-        this.p_velocity = this.NT.getDoubleTopic("velocity").publish();
     }
 
     private static Arm instance;
@@ -95,10 +87,7 @@ public class Arm implements ISubsystem{
 
 
     @Override 
-    public void submitTelemetry(){
-        p_position.set(getPosition());
-        p_velocity.set(getVelocity());
-    }
+    public void submitTelemetry(){}
 
     @Override
     public void receiveOptions(){}

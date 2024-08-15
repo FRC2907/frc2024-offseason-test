@@ -3,9 +3,6 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
 
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.constants.Control;
 import frc.robot.constants.Ports;
 import frc.robot.util.Util;
@@ -19,8 +16,6 @@ public class Shooter implements ISubsystem{
     public boolean noteScored;
 
     private CANSparkMax motor;
-    private NetworkTable NT;
-    private DoublePublisher p_velocity;
 
     private Shooter(CANSparkMax _motor){
         this.motor = _motor;
@@ -32,9 +27,6 @@ public class Shooter implements ISubsystem{
         for (int i = 0; i < currentOutputArr.length; i++){
             currentOutputArr[i] = averageCurrent;
           }
-
-        this.NT = NetworkTableInstance.getDefault().getTable("shooter");
-        this.p_velocity = this.NT.getDoubleTopic("velocity").publish();
     }
 
     private static Shooter instance;
@@ -102,9 +94,7 @@ public class Shooter implements ISubsystem{
     }
 
     @Override
-    public void submitTelemetry(){
-        p_velocity.set(getVelocity());
-    }
+    public void submitTelemetry(){}
 
     @Override
     public void receiveOptions(){}

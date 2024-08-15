@@ -7,7 +7,7 @@ public class Control {
     public static final double kZeroHysteresis = 2;
     public static final double kInchesPerMinuteToMetersPerSecond = 1 / (60 /*seconds*/ * Units.metersToInches(1));
     
-    public static class arm { //TODO arm control constants
+    public static class arm { //TODO fix/measure arm control constants
         public static final double ENCODER_POS_UNIT_PER_DEGREE = 0; // tick/deg
         public static final double ENCODER_VEL_UNIT_PER_DEGREE_PER_SECOND = 0; //tick/deg/s
 
@@ -41,7 +41,7 @@ public class Control {
                         
     }
 
-    public static class intake { //TODO intake control constants
+    public static class intake { //TODO fix/measure intake control constants
         public static final double ENCODER_VEL_UNIT_PER_INTAKE_MPS = 0;
         public static final double ENCODER_AMPS_PER_INTAKE_MPS = 0;
 
@@ -63,7 +63,7 @@ public class Control {
         public static final int kArrayLength = 50;
     }
 
-    public static class shooter { //TODO shooter control constants
+    public static class shooter { //TODO fix/measure shooter control constants
         public static final double ENCODER_VEL_UNIT_PER_SHOOTER_MPS = 0;
 
         public static final double kVelocityConversionFactor = 

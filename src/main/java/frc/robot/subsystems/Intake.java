@@ -3,10 +3,6 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
 
-import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.constants.Control;
 import frc.robot.constants.Ports;
 import frc.robot.util.Util;
@@ -14,14 +10,12 @@ import frc.robot.util.Util;
 public class Intake implements ISubsystem{
     private double setPoint;
     private double averageCurrent;
-    private int head;
-    private Double[] currentOutputArr;
 
+    private Double[] currentOutputArr;
+    private int head;
     public boolean hasNote;
 
     private CANSparkMax motor;
-    private NetworkTable NT;
-    private DoublePublisher p_velocity;
 
     private Intake(CANSparkMax _motor){ //TODO add velocity conversion factor to other motor
       this.motor = _motor;
@@ -34,9 +28,6 @@ public class Intake implements ISubsystem{
       }
       this.head = 0;
       this.hasNote = false;
-
-      this.NT = NetworkTableInstance.getDefault().getTable("intake");
-      this.p_velocity = this.NT.getDoubleTopic("velocity").publish();
     }
 
     private static Intake instance;
@@ -111,9 +102,7 @@ public class Intake implements ISubsystem{
     }
 
     @Override
-    public void submitTelemetry(){
-      p_velocity.set(getVelocity());
-    }
+    public void submitTelemetry(){}
 
     @Override
     public void receiveOptions(){}

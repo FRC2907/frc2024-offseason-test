@@ -3,13 +3,17 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Control;
 import frc.robot.constants.MechanismDimensions;
 import frc.robot.constants.Ports;
@@ -21,6 +25,7 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
     private double frontLeftSpeed, rearLeftSpeed, frontRightSpeed, rearRightSpeed;
 
     private DriveMode mode;
+    private Field2d sb_field;
     private AHRS gyro;
     private MecanumDriveWheelPositions wheelPositions;
     private final MecanumDrivePoseEstimator poseEstimator;
@@ -42,6 +47,9 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
       this.mode = DriveMode.FIELD_FORWARD; 
       this.gyro = new AHRS(SPI.Port.kMXP);
 
+      this.sb_field = new Field2d();
+      SmartDashboard.putData(sb_field);
+
       this.wheelPositions = new MecanumDriveWheelPositions(
         frontLeftMotor. getEncoder().getPosition(), 
         frontRightMotor.getEncoder().getPosition(), 
@@ -52,7 +60,9 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
         MechanismDimensions.drivetrain.DRIVE_KINEMATICS, 
         gyro.getRotation2d(),
         this.wheelPositions, 
-        new Pose2d()); //TODO add the vector thingies? if needed?
+        new Pose2d(),
+        VecBuilder.fill(0.05, 0.05, Units.Degrees.of(5.0).in(Units.Radians)),
+        VecBuilder.fill(0.5,  0.5,  Units.Degrees.of(30.0).in(Units.Radians))); //change numbers maybe
     }
 
     private static Drivetrain instance;
@@ -81,16 +91,36 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
   
     public DriveMode getDriveMode(){ return this.mode; }
 
-    public void setFieldDriveInputs(double xSpeed, double ySpeed, double zRotation){
+    public void setLocalDriveInputs(double xSpeed, double ySpeed, double zRotation){
       ChassisSpeeds chassisSpeeds = new ChassisSpeeds(
         xSpeed, ySpeed, zRotation);
       MecanumDriveWheelSpeeds wheelSpeeds = MechanismDimensions.drivetrain.DRIVE_KINEMATICS
         .toWheelSpeeds(chassisSpeeds);
       
-      frontLeftSpeed = wheelSpeeds.frontLeftMetersPerSecond;
-      rearLeftSpeed = wheelSpeeds.rearLeftMetersPerSecond;
+      frontLeftSpeed =  wheelSpeeds.frontLeftMetersPerSecond;
+      rearLeftSpeed =   wheelSpeeds.rearLeftMetersPerSecond;
       frontRightSpeed = wheelSpeeds.frontRightMetersPerSecond;
-      rearRightSpeed = wheelSpeeds.rearRightMetersPerSecond;
+      rearRightSpeed =  wheelSpeeds.rearRightMetersPerSecond;
+    }
+
+    public void setFieldDriveInputs(double xSpeed, double ySpeed, double zRotation){ //TODO do the things
+      ChassisSpeeds chassisSpeeds = new ChassisSpeeds(
+        xSpeed, ySpeed, zRotation);
+      chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, gyro.getRotation2d());
+      MecanumDriveWheelSpeeds wheelSpeeds = MechanismDimensions.drivetrain.DRIVE_KINEMATICS
+        .toWheelSpeeds(chassisSpeeds);
+      
+      frontLeftSpeed =  wheelSpeeds.frontLeftMetersPerSecond;
+      rearLeftSpeed =   wheelSpeeds.rearLeftMetersPerSecond;
+      frontRightSpeed = wheelSpeeds.frontRightMetersPerSecond;
+      rearRightSpeed =  wheelSpeeds.rearRightMetersPerSecond;
+    }
+
+    public void sendMotorInputs(double frontLeft, double rearLeft, double frontRight, double rearRight){
+      this.frontLeftMotor .getPIDController().setReference(frontLeft,  ControlType.kVelocity);
+      this.rearLeftMotor  .getPIDController().setReference(rearLeft,   ControlType.kVelocity);
+      this.frontRightMotor.getPIDController().setReference(frontRight, ControlType.kVelocity);
+      this.rearRightMotor .getPIDController().setReference(rearRight,  ControlType.kVelocity);
     }
 
     public void reverse(){
@@ -116,29 +146,42 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
         setDriveMode(DriveMode.LOCAL_REVERSED);
       }
     }
-    
-    private Pose2d pose;
+
+
 
     public Pose2d getPose(){
-      return this.pose;
+      return this.poseEstimator.getEstimatedPosition();
     }
 
-    private void setPose(Pose2d _pose){
-      this.pose = _pose;
+    private void updatePoseFromSensors(){
+      this.wheelPositions = new MecanumDriveWheelPositions(
+        frontLeftMotor. getEncoder().getPosition(), 
+        frontRightMotor.getEncoder().getPosition(), 
+        rearLeftMotor.  getEncoder().getPosition(), 
+        rearRightMotor. getEncoder().getPosition());
+
+      this.poseEstimator.update(this.gyro.getRotation2d(), this.wheelPositions);
+
+      //TODO add limelight stuff
     }
 
 
     
     @Override
     public void onLoop(){
-      this.frontLeftMotor .getPIDController().setReference(frontLeftSpeed,  ControlType.kVelocity);
-      this.rearLeftMotor  .getPIDController().setReference(rearLeftSpeed,   ControlType.kVelocity);
-      this.frontRightMotor.getPIDController().setReference(frontRightSpeed, ControlType.kVelocity);
-      this.rearRightMotor .getPIDController().setReference(rearRightSpeed,  ControlType.kVelocity);
+      updatePoseFromSensors();
+      sendMotorInputs(frontLeftSpeed, rearLeftSpeed, frontRightSpeed, rearRightSpeed);
     }
 
     @Override
-    public void submitTelemetry(){}
+    public void submitTelemetry(){
+      SmartDashboard.putNumber("drivetrain.fLeftVelocity",  frontLeftMotor.getEncoder().getVelocity());
+      SmartDashboard.putNumber("drivetrain.rLeftVelocity",  rearLeftMotor.getEncoder().getVelocity());
+      SmartDashboard.putNumber("drivetrain.fRightVelocity", frontRightMotor.getEncoder().getVelocity());
+      SmartDashboard.putNumber("drivetrain.rRightVelocity", rearRightMotor.getEncoder().getVelocity());
+
+      sb_field.setRobotPose(getPose());
+    }
 
     @Override
     public void receiveOptions(){}

@@ -41,7 +41,7 @@ public class Superstructure implements ISubsystem{
 
     private Superstructure(RobotState _state, boolean _automation){
         this.state = _state;
-        //this.automateScoring(_automation);
+        this.automateScoring(_automation);
         this.arm = Arm.getInstance();
         this.drivetrain = Drivetrain.getInstance();
         this.intake = Intake.getInstance();
@@ -130,7 +130,7 @@ public class Superstructure implements ISubsystem{
         switch(drivetrain.getDriveMode()){
           case AUTO:
           case FIELD_FORWARD:
-            drivetrain.setFieldDriveInputs(driver.getLeftY(), driver.getLeftX(), driver.getRightX());
+            drivetrain.setFieldDriveInputs(driver.getLeftY(), - driver.getLeftX(), driver.getRightX());
             break;
           case FIELD_REVERSED:
             break;
@@ -157,7 +157,7 @@ public class Superstructure implements ISubsystem{
       }
     } 
 
-    private void handleInputs(){ //TODO change to reference states
+    private void handleInputs(){ 
       if (driver.getCircleButtonPressed() || operator.getCircleButtonPressed()){
         cancelAction();
       }
@@ -268,8 +268,7 @@ public class Superstructure implements ISubsystem{
         case MOVING_TO_SPEAKER:
             arm.subwooferPosition();
             // TODO automatically drive up to the Speaker
-            if (arm.reachedSetPoint()) { // TODO add drivetrain reached set point
-              // TODO do we also want to get the shooter wheels up to speed first? or no?
+            if (arm.reachedSetPoint() && shooter.reachedSetPoint()) { // TODO add drivetrain reached set point
               this.state = RobotState.READY_TO_SCORE_SPEAKER;
             }
             break;
