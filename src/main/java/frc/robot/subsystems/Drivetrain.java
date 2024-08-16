@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Control;
 import frc.robot.constants.MechanismDimensions;
 import frc.robot.constants.Ports;
+import frc.robot.util.LimelightHelpers;
+import frc.robot.util.Util;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -29,6 +31,7 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
     private AHRS gyro;
     private MecanumDriveWheelPositions wheelPositions;
     private final MecanumDrivePoseEstimator poseEstimator;
+    private LimelightHelpers.PoseEstimate limelightMeasurement;
 
     public enum DriveMode {
           AUTO
@@ -162,7 +165,21 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
 
       this.poseEstimator.update(this.gyro.getRotation2d(), this.wheelPositions);
 
-      //TODO add limelight stuff
+      limelightDoodad();
+    }
+
+    private void limelightDoodad(){
+      if (Util.isBlue()){
+        limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
+      } else {
+        limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiRed("limelight");
+      }
+      if(limelightMeasurement.tagCount >= 1){
+        poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+        poseEstimator.addVisionMeasurement(
+            limelightMeasurement.pose,
+            limelightMeasurement.timestampSeconds);
+      }
     }
 
 
