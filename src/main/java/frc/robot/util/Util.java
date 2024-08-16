@@ -13,6 +13,7 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.PS5Controller;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -179,6 +180,13 @@ public class Util {
   public static boolean checkDriverDeadband(double value){
     return Math.abs(value) > MechanismConstraints.kDriverDeadband;
   }
+  public static double getLeftMagnitude(PS5Controller input){
+    return Math.sqrt(Math.pow(input.getLeftX(), 2.0) + Math.pow(input.getLeftY(), 2.0));
+  }
+  public static double getRightMagnitude(PS5Controller input){
+    return Math.sqrt(Math.pow(input.getRightX(), 2.0) + Math.pow(input.getRightY(), 2.0));
+  }
+
   public static boolean isBlue(){
 		if (DriverStation.getAlliance().isPresent()){
       	return DriverStation.getAlliance().get() == Alliance.Blue;

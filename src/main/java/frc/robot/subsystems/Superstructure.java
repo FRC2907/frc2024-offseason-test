@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.proto.Trajectory;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import frc.robot.subsystems.Drivetrain.DriveMode;
+import frc.robot.util.Util;
 import edu.wpi.first.wpilibj.PS5Controller;
 
 
@@ -124,36 +125,38 @@ public class Superstructure implements ISubsystem{
         case NEUTRAL:
         case MOVING_TO_HOLDING_NOTE:
         case HOLDING_NOTE:
+        case MOVING_TO_INTAKING:
         case INTAKING:
         case OUTAKING:
-    
+        //in these states, we move manually
         switch(drivetrain.getDriveMode()){
-          case AUTO:
           case FIELD_FORWARD:
-            drivetrain.setFieldDriveInputs(driver.getLeftY(), - driver.getLeftX(), driver.getRightX());
+            if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
+              drivetrain.setFieldDriveInputs(driver.getLeftY(), - driver.getLeftX(), driver.getRightX());
+            }
             break;
           case FIELD_REVERSED:
+            if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
+              drivetrain.setFieldDriveInputs( - driver.getLeftY(), driver.getLeftX(), - driver.getRightX()); //check??
+            }
             break;
           case LOCAL_FORWARD:
+            if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
+              drivetrain.setLocalDriveInputs(driver.getLeftY(), - driver.getLeftX(), driver.getRightX());
+            }
             break;
           case LOCAL_REVERSED:
+            if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
+              drivetrain.setLocalDriveInputs( - driver.getLeftY(), driver.getLeftX(), - driver.getRightX()); //check??
+            }
             break;
           default:
             break;
         }
         break;
-    
-        /*left = speed + rotation;
-        right = speed - rotation;
-    
-        if (left > 1.0 || left < -1.0) { right = right / Math.abs(left); left = left / Math.abs(left); }
-        if (right > 1.0 || right < -1.0) { left = left / Math.abs(right); right = right / Math.abs(right); }
-    
-        left = left / 4;
-        right = right / 4; */
 
-        default:
-          drivetrain.setDriveMode(DriveMode.AUTO);
+      default:
+        drivetrain.setDriveMode(DriveMode.AUTO);
       }
     } 
 

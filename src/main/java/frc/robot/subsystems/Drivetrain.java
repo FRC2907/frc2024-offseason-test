@@ -105,8 +105,7 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
       frontRightSpeed = wheelSpeeds.frontRightMetersPerSecond;
       rearRightSpeed =  wheelSpeeds.rearRightMetersPerSecond;
     }
-
-    public void setFieldDriveInputs(double xSpeed, double ySpeed, double zRotation){ //TODO do the things
+    public void setFieldDriveInputs(double xSpeed, double ySpeed, double zRotation){ //TODO check the things?
       ChassisSpeeds chassisSpeeds = new ChassisSpeeds(
         xSpeed, ySpeed, zRotation);
       chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, gyro.getRotation2d());
@@ -125,6 +124,21 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
       this.frontRightMotor.getPIDController().setReference(frontRight, ControlType.kVelocity);
       this.rearRightMotor .getPIDController().setReference(rearRight,  ControlType.kVelocity);
     }
+
+    public ChassisSpeeds getChassisSpeeds(double flSpeed, double frSpeed, double rlSpeed, double rrSpeed){
+      MecanumDriveWheelSpeeds wheelSpeeds = new MecanumDriveWheelSpeeds(flSpeed, frSpeed, rlSpeed, rrSpeed);
+      return MechanismDimensions.drivetrain.DRIVE_KINEMATICS.toChassisSpeeds(wheelSpeeds);
+    }
+
+    public double getXVelocity(){
+      return getChassisSpeeds(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed).vxMetersPerSecond;
+    }
+
+    public double getYVelocity(){
+      return getChassisSpeeds(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed).vyMetersPerSecond;
+    }
+
+
 
     public void reverse(){
       if (mode == DriveMode.LOCAL_FORWARD){
@@ -183,6 +197,15 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
     }
 
 
+
+    public void stop(){
+      frontLeftSpeed = 0;
+      rearLeftSpeed = 0;
+      frontRightSpeed = 0;
+      rearRightSpeed = 0;
+    }
+
+
     
     @Override
     public void onLoop(){
@@ -196,6 +219,10 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
       SmartDashboard.putNumber("drivetrain.rLeftVelocity",  rearLeftMotor.getEncoder().getVelocity());
       SmartDashboard.putNumber("drivetrain.fRightVelocity", frontRightMotor.getEncoder().getVelocity());
       SmartDashboard.putNumber("drivetrain.rRightVelocity", rearRightMotor.getEncoder().getVelocity());
+      SmartDashboard.putNumber("drivetrain.xVelocity", getXVelocity());
+      SmartDashboard.putNumber("yVelocity", getYVelocity());
+      SmartDashboard.putNumber("drivetrain.heading", gyro.getAngle());
+      SmartDashboard.putNumber("drivetrain.angularVelocity", gyro.getRate());
 
       sb_field.setRobotPose(getPose());
     }
