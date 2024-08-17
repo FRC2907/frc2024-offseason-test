@@ -14,7 +14,9 @@ public class Ports {
         }
 
         public static class intake {
-            public static final int[] MOTORS = { 13, 12 };
+            public static final int SLOW_MOTOR = 13;
+            public static final int FAST_MOTOR = 12;
+            public static final int[] MOTORS = { 12, 13 };
         }
 
         public static class shooter {

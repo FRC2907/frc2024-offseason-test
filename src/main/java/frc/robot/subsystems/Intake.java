@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.constants.Control;
 import frc.robot.constants.Ports;
@@ -15,11 +16,14 @@ public class Intake implements ISubsystem{
     private int head;
     public boolean hasNote;
 
-    private CANSparkMax motor;
+    private CANSparkMax slowMotor;
+    private CANSparkMax fastMotor;
 
-    private Intake(CANSparkMax _motor){ //TODO add velocity conversion factor to other motor
-      this.motor = _motor;
-      _motor.setInverted(true);
+    private Intake(CANSparkMax _slowMotor, CANSparkMax _fastMotor){ //TODO add velocity conversion factor to other motor
+      this.slowMotor = _slowMotor;
+      this.fastMotor = _fastMotor;
+      _slowMotor.setInverted(true);
+      _fastMotor.setInverted(false);
 
       averageCurrent = Control.intake.kAverageCurrent;
       currentOutputArr = new Double[Control.intake.kArrayLength];
@@ -34,8 +38,9 @@ public class Intake implements ISubsystem{
 
     public static Intake getInstance(){
       if (instance == null){
-        CANSparkMax motor = Util.createSparkGroup(Ports.CAN.intake.MOTORS, false, true);
-        instance = new Intake(motor);
+        CANSparkMax slow = new CANSparkMax(Ports.CAN.intake.SLOW_MOTOR, MotorType.kBrushless);
+        CANSparkMax fast = new CANSparkMax(Ports.CAN.intake.FAST_MOTOR, MotorType.kBrushless);
+        instance = new Intake(slow, fast);
       }
       return instance;
     }
@@ -43,14 +48,14 @@ public class Intake implements ISubsystem{
 
 
     public double getVelocity(){
-      return this.motor.getEncoder().getVelocity();
+      return this.fastMotor.getEncoder().getVelocity();
     }
 
     public void setSetPoint(double _setPoint){
       this.setPoint = _setPoint;
     }
     public boolean reachedSetPoint(){
-      return Math.abs(this.motor.getEncoder().getVelocity()) < Control.intake.kVelocityHysteresis;
+      return Math.abs(this.fastMotor.getEncoder().getVelocity()) < Control.intake.kVelocityHysteresis;
     }
 
 
@@ -71,12 +76,6 @@ public class Intake implements ISubsystem{
     public void off(){
       this.setSetPoint(Control.intake.kOff);
     }
-    public boolean isOn(){
-      return Math.abs(this.motor.getEncoder().getVelocity()) > Control.intake.kOnHysteresis;
-    }
-    public boolean isOff(){
-      return Math.abs(this.motor.getEncoder().getVelocity()) < Control.intake.kOnHysteresis;
-    }
     public boolean hasNote(){
       return this.hasNote; 
     } 
@@ -87,7 +86,7 @@ public class Intake implements ISubsystem{
       } else {
         this.head += 1;
         this.head %= currentOutputArr.length;
-        this.currentOutputArr = Util.arrayReplace(currentOutputArr, head, this.motor.getOutputCurrent());
+        this.currentOutputArr = Util.arrayReplace(currentOutputArr, head, this.fastMotor.getOutputCurrent());
         this.averageCurrent   = Util.arrayAverage(currentOutputArr);
       }
     }
@@ -96,7 +95,8 @@ public class Intake implements ISubsystem{
     
     @Override
     public void onLoop(){
-      this.motor.getPIDController().setReference(this.setPoint, ControlType.kVelocity);
+      this.fastMotor.getPIDController().setReference(this.setPoint, ControlType.kVelocity);
+      this.slowMotor.getPIDController().setReference(this.setPoint / 2, ControlType.kVelocity);
 
       currentDetection();
     }
