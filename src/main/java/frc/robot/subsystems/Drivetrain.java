@@ -14,9 +14,8 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.constants.Control;
 import frc.robot.constants.MechanismDimensions;
-import frc.robot.constants.Ports;
+import frc.robot.constants.MotorControllers;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.Util;
 
@@ -65,25 +64,18 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
         this.wheelPositions, 
         new Pose2d(),
         VecBuilder.fill(0.05, 0.05, Units.Degrees.of(5.0).in(Units.Radians)),
-        VecBuilder.fill(0.5,  0.5,  Units.Degrees.of(30.0).in(Units.Radians))); //change numbers maybe
+        VecBuilder.fill(0.5,  0.5,  Units.Degrees.of(30.0).in(Units.Radians))); //TODO change numbers maybe
     }
 
     private static Drivetrain instance;
 
     public static Drivetrain getInstance(){
-      CANSparkMax frontLeft, rearLeft, frontRight, rearRight;
       if (instance == null){
-        frontLeft  = new CANSparkMax(Ports.CAN.drivetrain.FRONT_LEFT,  com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-        rearLeft   = new CANSparkMax(Ports.CAN.drivetrain.REAR_LEFT,   com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-        frontRight = new CANSparkMax(Ports.CAN.drivetrain.FRONT_RIGHT, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-        rearRight  = new CANSparkMax(Ports.CAN.drivetrain.REAR_RIGHT,  com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-
-        frontLeft. getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
-        rearLeft.  getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
-        frontRight.getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
-        rearRight. getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
-
-        instance = new Drivetrain(frontLeft, rearLeft, frontRight, rearRight);
+        instance = new Drivetrain(
+                        MotorControllers.drivetrainfl(),
+                        MotorControllers.drivetrainrl(), 
+                        MotorControllers.drivetrainfr(),
+                        MotorControllers.drivetrainrr());
       }
       return instance;
     }

@@ -4,7 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
 
 import frc.robot.constants.Control;
-import frc.robot.constants.Ports;
+import frc.robot.constants.MotorControllers;
 import frc.robot.util.Util;
 
 public class Arm implements ISubsystem{
@@ -13,8 +13,6 @@ public class Arm implements ISubsystem{
     
     private Arm(CANSparkMax _motor){
         this.motor = _motor;
-        this.motor.getEncoder().setPositionConversionFactor(1 / Control.arm.ENCODER_POS_UNIT_PER_DEGREE);
-        this.motor.getEncoder().setVelocityConversionFactor(1 / Control.arm.ENCODER_VEL_UNIT_PER_DEGREE_PER_SECOND);
         this.setPDGains(Control.arm.kP, Control.arm.kD);
     }
 
@@ -22,9 +20,7 @@ public class Arm implements ISubsystem{
 
     public static Arm getInstance(){
         if (instance == null){
-            CANSparkMax motor = Util.createSparkGroup(Ports.CAN.arm.MOTORS, false, true);
-
-            instance = new Arm(motor);
+            instance = new Arm(MotorControllers.arm());
         }
         return instance;
     }

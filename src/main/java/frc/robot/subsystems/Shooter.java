@@ -1,9 +1,15 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+
 import com.revrobotics.CANSparkBase.ControlType;
 
 import frc.robot.constants.Control;
+import frc.robot.constants.FieldElements;
+import frc.robot.constants.MotorControllers;
 import frc.robot.constants.Ports;
 import frc.robot.util.Util;
 
@@ -19,8 +25,6 @@ public class Shooter implements ISubsystem{
 
     private Shooter(CANSparkMax _motor){
         this.motor = _motor;
-        this.motor.getEncoder().setVelocityConversionFactor(1 / Control.shooter.ENCODER_VEL_UNIT_PER_SHOOTER_MPS);
-
         this.noteScored = false;
         this.head = 0;
         this.averageCurrent = Control.shooter.kAverageCurrent;
@@ -33,9 +37,7 @@ public class Shooter implements ISubsystem{
 
     public static Shooter getInstance(){
         if (instance == null){
-            CANSparkMax motor = Util.createSparkGroup(Ports.CAN.shooter.MOTORS, false, true);
-
-            instance = new Shooter(motor);
+            instance = new Shooter(MotorControllers.shooter());
         }
         return instance;
     }
@@ -62,7 +64,10 @@ public class Shooter implements ISubsystem{
         this.setSetPoint(Control.shooter.kAmpSpeed);
     }
     public void speaker(){
-        this.setSetPoint(Control.shooter.kSpeakerSpeed);
+        Translation2d robotPose = Drivetrain.getInstance().getPose().getTranslation();
+        double airDistance = FieldElements.kSpeakerHole.getDistance(new Translation3d(robotPose.getX(), robotPose.getY(), 4)); //change 4 to like height of arm or whatever
+        double airTime = 0.3;
+        this.setSetPoint(airDistance / airTime);
     }
     public void manualShoot(){
         this.setSetPoint(Control.shooter.kMaxSpeed);
