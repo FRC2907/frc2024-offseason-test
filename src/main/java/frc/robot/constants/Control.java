@@ -51,10 +51,10 @@ public class Control {
         public static final double kP = 1;
         public static final double kD = 1;
 
-        public static final double kIntakingSpeed = 5; // m/s
+        public static final double kIntakingSpeed = 10; // m/s
         public static final double kOff = 0;
-        public static final double kOutakingSpeed = -5;
-        public static final double kShoot = 3;
+        public static final double kOutakingSpeed = -12;
+        public static final double kShoot = 5;
         public static final double kVelocityHysteresis = 2;
         public static final double kOnHysteresis = 3;
         public static final double kAverageCurrent = 0;
@@ -72,11 +72,11 @@ public class Control {
         public static final double kP = 1;
         public static final double kD = 1;
 
-        public static final double kSpeakerSpeed = 10; // m/s
-        public static final double kAmpSpeed = 3;
+        public static final double kSpeakerSpeed = 30; // m/s
+        public static final double kAmpSpeed = 10;
         public static final double kOff = 0;
         public static final double kVelocityHysteresis = 2;
-        public static final double kMaxSpeed = 10;
+        public static final double kMaxSpeed = 100;
         public static final double kAverageCurrent = 0;
         public static final double kCurrentHystereis = 2;
     }

@@ -10,7 +10,6 @@ import com.revrobotics.CANSparkBase.ControlType;
 import frc.robot.constants.Control;
 import frc.robot.constants.FieldElements;
 import frc.robot.constants.MotorControllers;
-import frc.robot.constants.Ports;
 import frc.robot.util.Util;
 
 public class Shooter implements ISubsystem{
