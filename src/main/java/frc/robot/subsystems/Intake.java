@@ -2,10 +2,9 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import frc.robot.constants.Control;
-import frc.robot.constants.Ports;
+import frc.robot.constants.MotorControllers;
 import frc.robot.util.Util;
 
 public class Intake implements ISubsystem{
@@ -19,11 +18,9 @@ public class Intake implements ISubsystem{
     private CANSparkMax slowMotor;
     private CANSparkMax fastMotor;
 
-    private Intake(CANSparkMax _slowMotor, CANSparkMax _fastMotor){ //TODO add velocity conversion factor to other motor
+    private Intake(CANSparkMax _slowMotor, CANSparkMax _fastMotor){ 
       this.slowMotor = _slowMotor;
       this.fastMotor = _fastMotor;
-      _slowMotor.setInverted(true);
-      _fastMotor.setInverted(false);
 
       averageCurrent = Control.intake.kAverageCurrent;
       currentOutputArr = new Double[Control.intake.kArrayLength];
@@ -38,9 +35,7 @@ public class Intake implements ISubsystem{
 
     public static Intake getInstance(){
       if (instance == null){
-        CANSparkMax slow = new CANSparkMax(Ports.CAN.intake.SLOW_MOTOR, MotorType.kBrushless);
-        CANSparkMax fast = new CANSparkMax(Ports.CAN.intake.FAST_MOTOR, MotorType.kBrushless);
-        instance = new Intake(slow, fast);
+        instance = new Intake(MotorControllers.intakeSlow(), MotorControllers.intakeFast());
       }
       return instance;
     }

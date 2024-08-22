@@ -270,8 +270,7 @@ public class Superstructure implements ISubsystem{
 
         case MOVING_TO_SPEAKER:
             arm.subwooferPosition();
-            // TODO automatically drive up to the Speaker
-            if (arm.reachedSetPoint() && shooter.reachedSetPoint()) { // TODO add drivetrain reached set point
+            if (arm.reachedSetPoint() && shooter.reachedSetPoint()) { 
               this.state = RobotState.READY_TO_SCORE_SPEAKER;
             }
             break;
