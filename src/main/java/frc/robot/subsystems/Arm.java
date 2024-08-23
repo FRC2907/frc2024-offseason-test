@@ -4,11 +4,13 @@ import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 
 import com.revrobotics.CANSparkBase.ControlType;
 
 import frc.robot.constants.Control;
 import frc.robot.constants.FieldElements;
+import frc.robot.constants.MechanismDimensions;
 import frc.robot.constants.MotorControllers;
 import frc.robot.util.Util;
 
@@ -64,7 +66,10 @@ public class Arm implements ISubsystem{
      */
 
         Translation2d robotPose = Drivetrain.getInstance().getPose().getTranslation();
-        double airDistance = FieldElements.kSpeakerHole.getDistance(new Translation3d(robotPose.getX(), robotPose.getY(), 4)); //change 4 to like height of arm or whatever
+        double airDistance = FieldElements.kSpeakerHole.getDistance(new Translation3d(
+                                                                Units.metersToInches(robotPose.getX()), 
+                                                                Units.metersToInches(robotPose.getY()),
+                                                                MechanismDimensions.arm.kHeight)); 
         double flatDistance = FieldElements.kSpeakerHole.toTranslation2d().getDistance(robotPose);
         this.setSetPoint(Math.acos(flatDistance / airDistance));
     }
