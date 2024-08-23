@@ -95,7 +95,7 @@ public class Superstructure implements ISubsystem{
       this.state = RobotState.SCORING_SPEAKER;
     }
     public void followingTrajectory(){
-      state = RobotState.FOLLOWING_TRAJECTORY;
+      this.state = RobotState.FOLLOWING_TRAJECTORY;
     }
     public void neutralPosition() {
         if (intake.hasNote()){
@@ -128,7 +128,10 @@ public class Superstructure implements ISubsystem{
         case MOVING_TO_INTAKING:
         case INTAKING:
         case OUTAKING:
-        //in these states, we move manually
+        case MOVING_TO_SPEAKER:
+        case READY_TO_SCORE_SPEAKER:
+        case SCORING_SPEAKER:
+        //in these states, we drive manually
         switch(drivetrain.getDriveMode()){
           case FIELD_FORWARD:
             if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
@@ -251,7 +254,7 @@ public class Superstructure implements ISubsystem{
         case MOVING_TO_AMP:
             arm.ampPosition();
             // TODO automatically drive up to the Amp
-            if (arm.reachedSetPoint()) { // TODO add drivetrain reached set point
+            if (arm.reachedSetPoint()){ // TODO add drivetrain reached set point
               this.state = RobotState.READY_TO_SCORE_AMP;
             }
             break;
@@ -269,14 +272,16 @@ public class Superstructure implements ISubsystem{
             break;
 
         case MOVING_TO_SPEAKER:
-            arm.subwooferPosition();
-            if (arm.reachedSetPoint() && shooter.reachedSetPoint()) { 
+            arm.speaker();
+            shooter.speaker();
+            if (arm.reachedSetPoint() && shooter.reachedSetPoint()){ 
               this.state = RobotState.READY_TO_SCORE_SPEAKER;
             }
             break;
         case READY_TO_SCORE_SPEAKER:
-            if (this.isScoringAutomated())
+            if (this.isScoringAutomated()){
               this.state = RobotState.SCORING_SPEAKER;
+            }
             break;
         case SCORING_SPEAKER:
             shooter.speaker();

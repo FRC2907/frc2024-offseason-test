@@ -12,6 +12,7 @@ public class MechanismDimensions {
 
     public static class arm {
         public static final double kLength = 0; //TODO find length of arm
+        public static final double kHeight = 0; //TODO find height of arm above ground
     }
 
     public static class drivetrain {

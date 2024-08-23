@@ -1,9 +1,14 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+
 import com.revrobotics.CANSparkBase.ControlType;
 
 import frc.robot.constants.Control;
+import frc.robot.constants.FieldElements;
 import frc.robot.constants.MotorControllers;
 import frc.robot.util.Util;
 
@@ -48,11 +53,20 @@ public class Arm implements ISubsystem{
     public void ampPosition(){
         this.setSetPoint(Control.arm.kAmpPosition);
     }
-    public void wingPosition(){ //TODO calculate speaker position with odometry
-        this.setSetPoint(Control.arm.kWingPosition);
-    }
-    public void subwooferPosition(){ //TODO calculate speaker position with odometry
-        this.setSetPoint(Control.arm.kSubwooferPosition);
+    public void speaker(){ 
+        
+    /**
+     * Here, we make a triangle and use trigonometry to get our angle. 
+     * We get the air distance which is the hypotenuse, the flat distance which is the length,
+     * and we don't need the height. The flat distance over the air distance is equal to
+     * cos(angle), so we can move it over to the other side of the equation.
+     * Acos is arc cosine, which is the inverse of cosine, so Acos(flatDistance / airDistance) = angle.
+     */
+
+        Translation2d robotPose = Drivetrain.getInstance().getPose().getTranslation();
+        double airDistance = FieldElements.kSpeakerHole.getDistance(new Translation3d(robotPose.getX(), robotPose.getY(), 4)); //change 4 to like height of arm or whatever
+        double flatDistance = FieldElements.kSpeakerHole.toTranslation2d().getDistance(robotPose);
+        this.setSetPoint(Math.acos(flatDistance / airDistance));
     }
     public void holdingPosition(){
         this.setSetPoint(Control.arm.kHoldingPosition);

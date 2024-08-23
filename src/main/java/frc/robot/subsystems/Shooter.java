@@ -65,7 +65,7 @@ public class Shooter implements ISubsystem{
     public void speaker(){
         Translation2d robotPose = Drivetrain.getInstance().getPose().getTranslation();
         double airDistance = FieldElements.kSpeakerHole.getDistance(new Translation3d(robotPose.getX(), robotPose.getY(), 4)); //change 4 to like height of arm or whatever
-        double airTime = 0.3;
+        double airTime = 0.2;
         this.setSetPoint(airDistance / airTime);
     }
     public void manualShoot(){
