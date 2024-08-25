@@ -13,7 +13,8 @@ public class Control {
 
         public static final double kVelocityConversionFactor = 
                           (1 / kInchesPerMinuteToMetersPerSecond) 
-                        / (MechanismDimensions.arm.kLength * 2 * Math.PI);
+                        / (MechanismDimensions.arm.kLength * 2 * Math.PI)
+                        *  MechanismDimensions.arm.GEAR_RATIO;
         public static final double kP = 1;
         public static final double kD = 1;
 
@@ -37,7 +38,8 @@ public class Control {
 
         public static final double kVelocityConversionFactor = 
                           (1 / kInchesPerMinuteToMetersPerSecond) 
-                        / (MechanismDimensions.drivetrain.WHEEL_DIAMETER * Math.PI);
+                        / (MechanismDimensions.drivetrain.WHEEL_DIAMETER * Math.PI)
+                        *  MechanismDimensions.drivetrain.GEAR_RATIO;
                         
     }
 
@@ -47,7 +49,8 @@ public class Control {
 
         public static final double kVelocityConversionFactor = 
                           (1 / kInchesPerMinuteToMetersPerSecond) 
-                        / (MechanismDimensions.intake.WHEEL_DIAMETER * Math.PI);
+                        / (MechanismDimensions.intake.WHEEL_DIAMETER * Math.PI)
+                        *  MechanismDimensions.intake.GEAR_RATIO;
         public static final double kP = 1;
         public static final double kD = 1;
 
@@ -68,7 +71,8 @@ public class Control {
 
         public static final double kVelocityConversionFactor = 
                           (1 / kInchesPerMinuteToMetersPerSecond) 
-                        / (MechanismDimensions.shooter.WHEEL_DIAMETER * Math.PI);
+                        / (MechanismDimensions.shooter.WHEEL_DIAMETER * Math.PI)
+                        *  MechanismDimensions.shooter.GEAR_RATIO;
         public static final double kP = 1;
         public static final double kD = 1;
 

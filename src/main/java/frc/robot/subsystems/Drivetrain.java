@@ -4,8 +4,11 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
 
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
@@ -14,6 +17,7 @@ import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.constants.FieldElements;
 import frc.robot.constants.MechanismDimensions;
 import frc.robot.constants.MotorControllers;
 import frc.robot.util.LimelightHelpers;
@@ -24,13 +28,16 @@ import com.kauailabs.navx.frc.AHRS;
 public class Drivetrain extends MecanumDrive implements ISubsystem{
     private CANSparkMax frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
     private double frontLeftSpeed, rearLeftSpeed, frontRightSpeed, rearRightSpeed;
+    private double desiredHeading;
+    private boolean rotationLock;
 
     private DriveMode mode;
     private Field2d sb_field;
     private AHRS gyro;
     private MecanumDriveWheelPositions wheelPositions;
-    private final MecanumDrivePoseEstimator poseEstimator;
     private LimelightHelpers.PoseEstimate limelightMeasurement;
+    private PIDController headingController;
+    private final MecanumDrivePoseEstimator poseEstimator;
 
     public enum DriveMode {
           AUTO
@@ -48,6 +55,9 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
       this.rearRightMotor = rearRight;
       this.mode = DriveMode.FIELD_FORWARD; 
       this.gyro = new AHRS(SPI.Port.kMXP);
+      this.rotationLock = false;
+      this.desiredHeading = gyro.getAngle();
+      this.headingController.setP(2);
 
       this.sb_field = new Field2d();
       SmartDashboard.putData(sb_field);
@@ -97,9 +107,10 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
       frontRightSpeed = wheelSpeeds.frontRightMetersPerSecond;
       rearRightSpeed =  wheelSpeeds.rearRightMetersPerSecond;
     }
-    public void setFieldDriveInputs(double xSpeed, double ySpeed, double zRotation){ //TODO check the things?
+    public void setFieldDriveInputs(double xSpeed, double ySpeed, double zRotation){ //TODO check the things? also convert from radians to degrees
       ChassisSpeeds chassisSpeeds = new ChassisSpeeds(
-        xSpeed, ySpeed, zRotation);
+        xSpeed, ySpeed, 
+        this.isLocked() ? headingController.calculate(getHeading().getDegrees()) : zRotation);
       chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, gyro.getRotation2d());
       MecanumDriveWheelSpeeds wheelSpeeds = MechanismDimensions.drivetrain.DRIVE_KINEMATICS
         .toWheelSpeeds(chassisSpeeds);
@@ -122,12 +133,30 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
       return MechanismDimensions.drivetrain.DRIVE_KINEMATICS.toChassisSpeeds(wheelSpeeds);
     }
 
+    public void lock(){ //more fun trigonometry, see arm.speaker() for more details
+      Translation2d speaker = FieldElements.kSpeakerHole.toTranslation2d();
+      double distance = speaker.getDistance(this.getPose().getTranslation());
+      double yDistance = Math.abs(speaker.getX() - this.getPose().getX());
+
+      this.rotationLock = true;
+      this.desiredHeading = Math.acos(yDistance / distance);
+      this.headingController.setSetpoint(desiredHeading);
+    }
+    public void unlock(){
+      this.rotationLock = false;
+    }
+    public boolean isLocked(){
+      return rotationLock;
+    }
+
     public double getXVelocity(){
       return getChassisSpeeds(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed).vxMetersPerSecond;
     }
-
     public double getYVelocity(){
       return getChassisSpeeds(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed).vyMetersPerSecond;
+    }
+    public Rotation2d getHeading(){
+      return this.getPose().getRotation();
     }
 
 

@@ -11,11 +11,14 @@ public class MechanismDimensions {
     }
 
     public static class arm {
+        public static final double GEAR_RATIO = 0; //TODO find
         public static final double kLength = 0; //TODO find length of arm
         public static final double kHeight = 0; //TODO find height of arm above ground
     }
 
     public static class drivetrain {
+        //https://www.andymark.com/products/toughbox-micro-s
+        public static final double GEAR_RATIO = 9.13; //TODO check 
         public static final double WHEEL_DIAMETER = 8; //inches
 
         //22.875 in. edge to edge wide, 20.5 in. edge to edge long
@@ -29,10 +32,12 @@ public class MechanismDimensions {
     }
 
     public static class intake {
+        public static final double GEAR_RATIO = 0;//TODO find
         public static final double WHEEL_DIAMETER = 2; //inches
     }
 
     public static class shooter {
+        public static final double GEAR_RATIO = 0;//TODO find
         public static final double WHEEL_DIAMETER = 4; //TODO find diameter
     }
 }

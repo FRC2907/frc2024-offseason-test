@@ -273,6 +273,7 @@ public class Superstructure implements ISubsystem{
 
         case MOVING_TO_SPEAKER:
             arm.speaker();
+            drivetrain.lock();
             shooter.speaker();
             if (arm.reachedSetPoint() && shooter.reachedSetPoint()){ 
               this.state = RobotState.READY_TO_SCORE_SPEAKER;
@@ -283,8 +284,11 @@ public class Superstructure implements ISubsystem{
               this.state = RobotState.SCORING_SPEAKER;
             }
             break;
-        case SCORING_SPEAKER:
+        case SCORING_SPEAKER: //TODO consider tying this to a seperate button for more optimized control
+            arm.speaker();
+            drivetrain.lock();
             shooter.speaker();
+            intake.shoot();
             if (shooter.noteScored()) { 
               intake.hasNote = false;
               this.state = RobotState.NEUTRAL;
@@ -293,6 +297,7 @@ public class Superstructure implements ISubsystem{
 
         case NEUTRAL:
             arm.neutralPosition();
+            drivetrain.unlock();
             intake.off();
             shooter.off();
             break;
