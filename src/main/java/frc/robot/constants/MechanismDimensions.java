@@ -32,12 +32,12 @@ public class MechanismDimensions {
     }
 
     public static class intake {
-        public static final double GEAR_RATIO = 0;//TODO find
+        public static final double GEAR_RATIO = 0; //TODO find
         public static final double WHEEL_DIAMETER = 2; //inches
     }
 
     public static class shooter {
-        public static final double GEAR_RATIO = 0;//TODO find
+        public static final double GEAR_RATIO = 0; //TODO find
         public static final double WHEEL_DIAMETER = 4; //TODO find diameter
     }
 }

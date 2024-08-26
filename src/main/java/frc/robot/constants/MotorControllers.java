@@ -14,7 +14,7 @@ public class MotorControllers {
     public static final CANSparkMax arm(){
         if (_arm == null){
             _arm = Util.createSparkGroup(Ports.CAN.arm.MOTORS, false, true);
-            _arm.getEncoder().setPositionConversionFactor(1 / Control.arm.ENCODER_POS_UNIT_PER_DEGREE);
+            _arm.getEncoder().setPositionConversionFactor(Control.arm.kPositionConversionFactor);
             _arm.getEncoder().setVelocityConversionFactor(Control.arm.kVelocityConversionFactor);
         }
         return _arm;

@@ -15,6 +15,9 @@ public class Control {
                           (1 / kInchesPerMinuteToMetersPerSecond) 
                         / (MechanismDimensions.arm.kLength * 2 * Math.PI)
                         *  MechanismDimensions.arm.GEAR_RATIO;
+        public static final double kPositionConversionFactor = MechanismDimensions.arm.GEAR_RATIO 
+                                                             * 360;
+                                                            
         public static final double kP = 1;
         public static final double kD = 1;
 
