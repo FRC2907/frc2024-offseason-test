@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Control;
 import frc.robot.constants.MotorControllers;
 import frc.robot.util.Util;
@@ -97,7 +98,11 @@ public class Intake implements ISubsystem{
     }
 
     @Override
-    public void submitTelemetry(){}
+    public void submitTelemetry(){
+      SmartDashboard.putNumber("intake/velocity", this.getVelocity()); //consider adding velocities for both motors
+      SmartDashboard.putNumber("intake/setpoint", this.setPoint);
+      SmartDashboard.putBoolean("intake/hasNote", this.hasNote());
+    }
 
     @Override
     public void receiveOptions(){}

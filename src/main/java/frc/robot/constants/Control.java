@@ -87,4 +87,19 @@ public class Control {
         public static final double kAverageCurrent = 0;
         public static final double kCurrentHystereis = 2;
     }
+
+
+
+    public static class led { //all color values found here: https://www.revrobotics.com/content/docs/REV-11-1105-UM.pdf
+        public static final double red = 0.61;
+        public static final double orange = 0.65;
+        public static final double yellow = 0.69;
+        public static final double green = 0.77;
+        public static final double blue = 0.87;
+        public static final double violet = 0.91;
+        public static final double white = 0.93;
+        public static final double black = 0.99;
+
+        public static final Double[] colors = new Double[8];
+    }
 }

@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.proto.Trajectory;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain.DriveMode;
 import frc.robot.util.Util;
 import edu.wpi.first.wpilibj.PS5Controller;
@@ -314,8 +315,13 @@ public class Superstructure implements ISubsystem{
       }
     }
 
+
+
     @Override
-    public void submitTelemetry(){}
+    public void submitTelemetry(){
+      SmartDashboard.putString("superstructure/robotState", this.getState().toString());
+      SmartDashboard.putString("superstructure/drivemode", drivetrain.getDriveMode().toString());
+    }
 
     @Override
     public void receiveOptions(){}

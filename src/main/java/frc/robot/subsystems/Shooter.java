@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.CANSparkBase.ControlType;
 
@@ -103,7 +104,11 @@ public class Shooter implements ISubsystem{
     }
 
     @Override
-    public void submitTelemetry(){}
+    public void submitTelemetry(){
+        SmartDashboard.putNumber("shooter/velocity", this.getVelocity()); //consider adding velocities for both motors
+        SmartDashboard.putNumber("shooter/setpoint", this.setPoint);
+        SmartDashboard.putBoolean("shooter/noteScored", this.noteScored());
+    }
 
     @Override
     public void receiveOptions(){}

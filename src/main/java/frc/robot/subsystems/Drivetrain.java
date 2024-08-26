@@ -236,14 +236,14 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
 
     @Override
     public void submitTelemetry(){
-      SmartDashboard.putNumber("drivetrain.fLeftVelocity",  frontLeftMotor.getEncoder().getVelocity());
-      SmartDashboard.putNumber("drivetrain.rLeftVelocity",  rearLeftMotor.getEncoder().getVelocity());
-      SmartDashboard.putNumber("drivetrain.fRightVelocity", frontRightMotor.getEncoder().getVelocity());
-      SmartDashboard.putNumber("drivetrain.rRightVelocity", rearRightMotor.getEncoder().getVelocity());
-      SmartDashboard.putNumber("drivetrain.xVelocity", getXVelocity());
-      SmartDashboard.putNumber("yVelocity", getYVelocity());
-      SmartDashboard.putNumber("drivetrain.heading", gyro.getAngle());
-      SmartDashboard.putNumber("drivetrain.angularVelocity", gyro.getRate());
+      SmartDashboard.putNumber("drivetrain/fLeftVelocity",  frontLeftMotor.getEncoder().getVelocity());
+      SmartDashboard.putNumber("drivetrain/rLeftVelocity",  rearLeftMotor.getEncoder().getVelocity());
+      SmartDashboard.putNumber("drivetrain/fRightVelocity", frontRightMotor.getEncoder().getVelocity());
+      SmartDashboard.putNumber("drivetrain/rRightVelocity", rearRightMotor.getEncoder().getVelocity());
+      SmartDashboard.putNumber("drivetrain/xVelocity", getXVelocity());
+      SmartDashboard.putNumber("drivetrain/yVelocity", getYVelocity());
+      SmartDashboard.putNumber("drivetrain/heading", gyro.getAngle());
+      SmartDashboard.putNumber("drivetrain/angularVelocity", gyro.getRate());
 
       sb_field.setRobotPose(getPose());
     }

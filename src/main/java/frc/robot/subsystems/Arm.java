@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.revrobotics.CANSparkBase.ControlType;
 
@@ -102,7 +103,11 @@ public class Arm implements ISubsystem{
 
 
     @Override 
-    public void submitTelemetry(){}
+    public void submitTelemetry(){
+        SmartDashboard.putNumber("arm/position", this.getPosition());
+        SmartDashboard.putNumber("arm/velocity", this.getVelocity());
+        SmartDashboard.putNumber("arm/setpoint", this.setPoint);
+    }
 
     @Override
     public void receiveOptions(){}
