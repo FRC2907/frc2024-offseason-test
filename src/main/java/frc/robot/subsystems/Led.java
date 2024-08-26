@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.constants.Control;
 import frc.robot.constants.Ports;
 
 public class Led implements ISubsystem{
@@ -9,15 +11,11 @@ public class Led implements ISubsystem{
     private AddressableLEDBuffer m_ledBuffer;
     private int m_rainbowFirstPixelHue;
     private PWMSparkMax led;
-    public boolean ledRunning;
 
     private int[] array;
 
     private Led(PWMSparkMax led){
-      ledRunning = false;
-
       array = new int[m_ledBuffer.getLength()];
-
       for (int i = 0; i < m_ledBuffer.getLength(); i++){
         array[i] = i;
       }
@@ -57,23 +55,57 @@ public class Led implements ISubsystem{
       }
     }
 
+
+
+    public String getColor(){
+      if (led.get() == Control.led.red){
+        return "red";
+      }
+      if (led.get() == Control.led.orange){
+        return "orange";
+      }
+      if (led.get() == Control.led.yellow){
+        return "yellow";
+      }
+      if (led.get() == Control.led.green){
+        return "green";
+      }
+      if (led.get() == Control.led.blue){
+        return "blue";
+      }
+      if (led.get() == Control.led.violet){
+        return "violet";
+      }
+      if (led.get() == Control.led.white){
+        return "white";
+      }
+      if (led.get() == Control.led.black){
+        return "black";
+      }
+      return null;
+    }
+
+    
+
     @Override
     public void onLoop(){}
 
 
-    public void    red() { led.set(0.61); }
-    public void orange() { led.set(0.65); }
-    public void yellow() { led.set(0.69); }
-    public void  green() { led.set(0.77); }
-    public void   blue() { led.set(0.87); }
-    public void violet() { led.set(0.91); }
-    public void  white() { led.set(0.93); }
-    public void  black() { led.set(0.99); }
+    public void    red() { led.set(Control.led.red); }
+    public void orange() { led.set(Control.led.orange); }
+    public void yellow() { led.set(Control.led.yellow); }
+    public void  green() { led.set(Control.led.green); }
+    public void   blue() { led.set(Control.led.blue); }
+    public void violet() { led.set(Control.led.violet); }
+    public void  white() { led.set(Control.led.white); }
+    public void  black() { led.set(Control.led.black); }
 
-    //all color values found here: https://www.revrobotics.com/content/docs/REV-11-1105-UM.pdf
+
 
     @Override
-    public void submitTelemetry(){}
+    public void submitTelemetry(){
+      SmartDashboard.putString("led/color", this.getColor());
+    }
 
     @Override
     public void receiveOptions(){}

@@ -1,38 +1,34 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import com.revrobotics.CANSparkBase.ControlType;
 
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.constants.Control;
-import frc.robot.constants.Ports;
+import frc.robot.constants.FieldElements;
+import frc.robot.constants.MechanismDimensions;
+import frc.robot.constants.MotorControllers;
 import frc.robot.util.Util;
 
 public class Arm implements ISubsystem{
     private double setPoint;
     private CANSparkMax motor;
-    private NetworkTable NT;
-    private DoublePublisher p_position, p_velocity;
     
     private Arm(CANSparkMax _motor){
         this.motor = _motor;
-        this.motor.getEncoder().setPositionConversionFactor(1 / Control.arm.ENCODER_POS_UNIT_PER_DEGREE);
-        this.motor.getEncoder().setVelocityConversionFactor(1 / Control.arm.ENCODER_VEL_UNIT_PER_DEGREE_PER_SECOND);
         this.setPDGains(Control.arm.kP, Control.arm.kD);
-        this.NT = NetworkTableInstance.getDefault().getTable("arm");
-        this.p_position = this.NT.getDoubleTopic("position").publish();
-        this.p_velocity = this.NT.getDoubleTopic("velocity").publish();
     }
 
     private static Arm instance;
 
     public static Arm getInstance(){
         if (instance == null){
-            CANSparkMax motor = Util.createSparkGroup(Ports.CAN.arm.MOTORS, false, true);
-
-            instance = new Arm(motor);
+            instance = new Arm(MotorControllers.arm());
         }
         return instance;
     }
@@ -60,11 +56,23 @@ public class Arm implements ISubsystem{
     public void ampPosition(){
         this.setSetPoint(Control.arm.kAmpPosition);
     }
-    public void wingPosition(){ //TODO calculate speaker position with odometry
-        this.setSetPoint(Control.arm.kWingPosition);
-    }
-    public void subwooferPosition(){ //TODO calculate speaker position with odometry
-        this.setSetPoint(Control.arm.kSubwooferPosition);
+    public void speaker(){ 
+        
+    /**
+     * Here, we make a triangle and use trigonometry to get our angle. 
+     * We get the air distance which is the hypotenuse, the flat distance which is the length,
+     * and we don't need the height. The flat distance over the air distance is equal to
+     * cos(angle), so we can move it over to the other side of the equation.
+     * Acos is arc cosine, which is the inverse of cosine, so Acos(flatDistance / airDistance) = angle.
+     */
+
+        Translation2d robotPose = Drivetrain.getInstance().getPose().getTranslation();
+        double airDistance = FieldElements.kSpeakerHole.getDistance(new Translation3d(
+                                                                Units.metersToInches(robotPose.getX()), 
+                                                                Units.metersToInches(robotPose.getY()),
+                                                                MechanismDimensions.arm.kHeight)); 
+        double flatDistance = FieldElements.kSpeakerHole.toTranslation2d().getDistance(robotPose);
+        this.setSetPoint(Math.acos(flatDistance / airDistance));
     }
     public void holdingPosition(){
         this.setSetPoint(Control.arm.kHoldingPosition);
@@ -96,8 +104,9 @@ public class Arm implements ISubsystem{
 
     @Override 
     public void submitTelemetry(){
-        p_position.set(getPosition());
-        p_velocity.set(getVelocity());
+        SmartDashboard.putNumber("arm/position", this.getPosition());
+        SmartDashboard.putNumber("arm/velocity", this.getVelocity());
+        SmartDashboard.putNumber("arm/setpoint", this.setPoint);
     }
 
     @Override

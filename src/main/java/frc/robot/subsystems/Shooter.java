@@ -1,13 +1,18 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import com.revrobotics.CANSparkBase.ControlType;
 
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import frc.robot.constants.Control;
-import frc.robot.constants.Ports;
+import frc.robot.constants.FieldElements;
+import frc.robot.constants.MechanismDimensions;
+import frc.robot.constants.MotorControllers;
 import frc.robot.util.Util;
 
 public class Shooter implements ISubsystem{
@@ -19,31 +24,22 @@ public class Shooter implements ISubsystem{
     public boolean noteScored;
 
     private CANSparkMax motor;
-    private NetworkTable NT;
-    private DoublePublisher p_velocity;
 
     private Shooter(CANSparkMax _motor){
         this.motor = _motor;
-        this.motor.getEncoder().setVelocityConversionFactor(1 / Control.shooter.ENCODER_VEL_UNIT_PER_SHOOTER_MPS);
-
         this.noteScored = false;
         this.head = 0;
         this.averageCurrent = Control.shooter.kAverageCurrent;
         for (int i = 0; i < currentOutputArr.length; i++){
             currentOutputArr[i] = averageCurrent;
           }
-
-        this.NT = NetworkTableInstance.getDefault().getTable("shooter");
-        this.p_velocity = this.NT.getDoubleTopic("velocity").publish();
     }
 
     private static Shooter instance;
 
     public static Shooter getInstance(){
         if (instance == null){
-            CANSparkMax motor = Util.createSparkGroup(Ports.CAN.shooter.MOTORS, false, true);
-
-            instance = new Shooter(motor);
+            instance = new Shooter(MotorControllers.shooter());
         }
         return instance;
     }
@@ -70,7 +66,13 @@ public class Shooter implements ISubsystem{
         this.setSetPoint(Control.shooter.kAmpSpeed);
     }
     public void speaker(){
-        this.setSetPoint(Control.shooter.kSpeakerSpeed);
+        Translation2d robotPose = Drivetrain.getInstance().getPose().getTranslation();
+        double airDistance = FieldElements.kSpeakerHole.getDistance(new Translation3d(
+                                                                Units.metersToInches(robotPose.getX()), 
+                                                                Units.metersToInches(robotPose.getY()),
+                                                                MechanismDimensions.arm.kHeight)); 
+        double airTime = 0.2;
+        this.setSetPoint(airDistance / airTime);
     }
     public void manualShoot(){
         this.setSetPoint(Control.shooter.kMaxSpeed);
@@ -103,7 +105,9 @@ public class Shooter implements ISubsystem{
 
     @Override
     public void submitTelemetry(){
-        p_velocity.set(getVelocity());
+        SmartDashboard.putNumber("shooter/velocity", this.getVelocity()); //consider adding velocities for both motors
+        SmartDashboard.putNumber("shooter/setpoint", this.setPoint);
+        SmartDashboard.putBoolean("shooter/noteScored", this.noteScored());
     }
 
     @Override

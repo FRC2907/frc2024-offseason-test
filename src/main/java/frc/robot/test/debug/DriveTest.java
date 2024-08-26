@@ -5,24 +5,29 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.PS5Controller;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import frc.robot.constants.Control;
 
+import com.kauailabs.navx.frc.AHRS;
+
 public class DriveTest extends TimedRobot{
-    int i_top_left = 1, i_bottom_left = 2, i_top_right = 3, i_bottom_right = 4;
+    private int i_top_left = 1, i_bottom_left = 2, i_top_right = 3, i_bottom_right = 4;
 
-    CANSparkMax top_left = new CANSparkMax(i_top_left, MotorType.kBrushless);
-    CANSparkMax bottom_left = new CANSparkMax(i_bottom_left, MotorType.kBrushless);
-    CANSparkMax top_right = new CANSparkMax(i_top_right, MotorType.kBrushless);
-    CANSparkMax bottom_right = new CANSparkMax(i_bottom_right, MotorType.kBrushless);
+    private CANSparkMax top_left = new CANSparkMax(i_top_left, MotorType.kBrushless);
+    private CANSparkMax bottom_left = new CANSparkMax(i_bottom_left, MotorType.kBrushless);
+    private CANSparkMax top_right = new CANSparkMax(i_top_right, MotorType.kBrushless);
+    private CANSparkMax bottom_right = new CANSparkMax(i_bottom_right, MotorType.kBrushless);
 
-    MecanumDrive dt;
+    private MecanumDrive dt;
 
-    PS5Controller driver = new PS5Controller(0);
+    private AHRS gyro;
 
-    Timer timer = new Timer();
+    private PS5Controller driver = new PS5Controller(0);
+
+    private Timer timer = new Timer();
 
     @Override
     public void robotInit(){
@@ -42,6 +47,8 @@ public class DriveTest extends TimedRobot{
         bottom_right.getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
 
         dt = new MecanumDrive(top_left, bottom_left, top_right, bottom_right);
+
+        gyro = new AHRS(SPI.Port.kMXP);
     }
 
     private void breakIn(){
@@ -72,6 +79,7 @@ public class DriveTest extends TimedRobot{
     @Override
     public void teleopPeriodic(){
         //dt.driveCartesian(driver.getLeftX(), driver.getLeftY(), driver.getRightX());
+        dt.driveCartesian(driver.getLeftX(), driver.getLeftY(), driver.getRightX(), gyro.getRotation2d());
         breakIn();  //use to break in motors for 30 minutes
     }
 }

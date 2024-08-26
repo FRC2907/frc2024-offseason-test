@@ -3,29 +3,25 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
 
-import edu.wpi.first.math.estimator.MecanumDrivePoseEstimator;
-import edu.wpi.first.networktables.DoublePublisher;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.constants.Control;
-import frc.robot.constants.Ports;
+import frc.robot.constants.MotorControllers;
 import frc.robot.util.Util;
 
 public class Intake implements ISubsystem{
     private double setPoint;
     private double averageCurrent;
-    private int head;
-    private Double[] currentOutputArr;
 
+    private Double[] currentOutputArr;
+    private int head;
     public boolean hasNote;
 
-    private CANSparkMax motor;
-    private NetworkTable NT;
-    private DoublePublisher p_velocity;
+    private CANSparkMax slowMotor;
+    private CANSparkMax fastMotor;
 
-    private Intake(CANSparkMax _motor){ //TODO add velocity conversion factor to other motor
-      this.motor = _motor;
-      _motor.setInverted(true);
+    private Intake(CANSparkMax _slowMotor, CANSparkMax _fastMotor){ 
+      this.slowMotor = _slowMotor;
+      this.fastMotor = _fastMotor;
 
       averageCurrent = Control.intake.kAverageCurrent;
       currentOutputArr = new Double[Control.intake.kArrayLength];
@@ -34,17 +30,13 @@ public class Intake implements ISubsystem{
       }
       this.head = 0;
       this.hasNote = false;
-
-      this.NT = NetworkTableInstance.getDefault().getTable("intake");
-      this.p_velocity = this.NT.getDoubleTopic("velocity").publish();
     }
 
     private static Intake instance;
 
     public static Intake getInstance(){
       if (instance == null){
-        CANSparkMax motor = Util.createSparkGroup(Ports.CAN.intake.MOTORS, false, true);
-        instance = new Intake(motor);
+        instance = new Intake(MotorControllers.intakeSlow(), MotorControllers.intakeFast());
       }
       return instance;
     }
@@ -52,14 +44,14 @@ public class Intake implements ISubsystem{
 
 
     public double getVelocity(){
-      return this.motor.getEncoder().getVelocity();
+      return this.fastMotor.getEncoder().getVelocity();
     }
 
     public void setSetPoint(double _setPoint){
       this.setPoint = _setPoint;
     }
     public boolean reachedSetPoint(){
-      return Math.abs(this.motor.getEncoder().getVelocity()) < Control.intake.kVelocityHysteresis;
+      return Math.abs(this.fastMotor.getEncoder().getVelocity()) < Control.intake.kVelocityHysteresis;
     }
 
 
@@ -80,12 +72,6 @@ public class Intake implements ISubsystem{
     public void off(){
       this.setSetPoint(Control.intake.kOff);
     }
-    public boolean isOn(){
-      return Math.abs(this.motor.getEncoder().getVelocity()) > Control.intake.kOnHysteresis;
-    }
-    public boolean isOff(){
-      return Math.abs(this.motor.getEncoder().getVelocity()) < Control.intake.kOnHysteresis;
-    }
     public boolean hasNote(){
       return this.hasNote; 
     } 
@@ -96,7 +82,7 @@ public class Intake implements ISubsystem{
       } else {
         this.head += 1;
         this.head %= currentOutputArr.length;
-        this.currentOutputArr = Util.arrayReplace(currentOutputArr, head, this.motor.getOutputCurrent());
+        this.currentOutputArr = Util.arrayReplace(currentOutputArr, head, this.fastMotor.getOutputCurrent());
         this.averageCurrent   = Util.arrayAverage(currentOutputArr);
       }
     }
@@ -105,14 +91,17 @@ public class Intake implements ISubsystem{
     
     @Override
     public void onLoop(){
-      this.motor.getPIDController().setReference(this.setPoint, ControlType.kVelocity);
+      this.fastMotor.getPIDController().setReference(this.setPoint, ControlType.kVelocity);
+      this.slowMotor.getPIDController().setReference(this.setPoint / 2, ControlType.kVelocity);
 
       currentDetection();
     }
 
     @Override
     public void submitTelemetry(){
-      p_velocity.set(getVelocity());
+      SmartDashboard.putNumber("intake/velocity", this.getVelocity()); //consider adding velocities for both motors
+      SmartDashboard.putNumber("intake/setpoint", this.setPoint);
+      SmartDashboard.putBoolean("intake/hasNote", this.hasNote());
     }
 
     @Override
