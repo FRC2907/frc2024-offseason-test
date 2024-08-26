@@ -91,17 +91,20 @@ public class Intake implements ISubsystem{
     
     @Override
     public void onLoop(){
+      receiveOptions();
       this.fastMotor.getPIDController().setReference(this.setPoint, ControlType.kVelocity);
       this.slowMotor.getPIDController().setReference(this.setPoint / 2, ControlType.kVelocity);
 
       currentDetection();
+
+      submitTelemetry();
     }
 
     @Override
     public void submitTelemetry(){
-      SmartDashboard.putNumber("intake/velocity", this.getVelocity()); //consider adding velocities for both motors
-      SmartDashboard.putNumber("intake/setpoint", this.setPoint);
-      SmartDashboard.putBoolean("intake/hasNote", this.hasNote());
+      SmartDashboard.putNumber("intake_velocity", this.getVelocity()); //consider adding velocities for both motors
+      SmartDashboard.putNumber("intake_setpoint", this.setPoint);
+      SmartDashboard.putBoolean("intake_hasNote", this.hasNote());
     }
 
     @Override

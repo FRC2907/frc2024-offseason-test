@@ -101,14 +101,16 @@ public class Shooter implements ISubsystem{
 
     @Override
     public void onLoop(){
+        receiveOptions();
         this.motor.getPIDController().setReference(this.setPoint, ControlType.kVelocity);
+        submitTelemetry();
     }
 
     @Override
     public void submitTelemetry(){
-        SmartDashboard.putNumber("shooter/velocity", this.getVelocity()); //consider adding velocities for both motors
-        SmartDashboard.putNumber("shooter/setpoint", this.setPoint);
-        SmartDashboard.putBoolean("shooter/noteScored", this.noteScored());
+        SmartDashboard.putNumber("shooter_velocity", this.getVelocity()); //consider adding velocities for both motors
+        SmartDashboard.putNumber("shooter_setpoint", this.setPoint);
+        SmartDashboard.putBoolean("shooter_noteScored", this.noteScored());
     }
 
     @Override

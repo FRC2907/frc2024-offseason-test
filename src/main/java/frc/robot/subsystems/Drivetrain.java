@@ -22,7 +22,6 @@ import frc.robot.constants.MechanismDimensions;
 import frc.robot.constants.MotorControllers;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.Util;
-import frc.robot.util.LimelightHelpers.PoseEstimate;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -59,7 +58,6 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
       this.rotationLock = false;
       this.desiredHeading = gyro.getAngle();
       this.headingController = new PIDController(2, 1, 1);
-      this.limelightMeasurement = new PoseEstimate();
 
       this.sb_field = new Field2d();
       SmartDashboard.putData(sb_field);
@@ -202,10 +200,10 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
 
       this.poseEstimator.update(this.gyro.getRotation2d(), this.wheelPositions);
 
-      limelightDoodad();
+      //limelightDoodad();
     }
 
-    private void limelightDoodad(){
+    /*private void limelightDoodad(){
       if (Util.isBlue()){
         limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
       } else {
@@ -217,7 +215,7 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
             limelightMeasurement.pose,
             limelightMeasurement.timestampSeconds);
       }
-    }
+    } */
 
 
 
@@ -232,20 +230,22 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
     
     @Override
     public void onLoop(){
+      receiveOptions();
       updatePoseFromSensors();
       sendMotorInputs(frontLeftSpeed, rearLeftSpeed, frontRightSpeed, rearRightSpeed);
+      submitTelemetry();
     }
 
     @Override
     public void submitTelemetry(){
-      SmartDashboard.putNumber("drivetrain/fLeftVelocity",  frontLeftMotor.getEncoder().getVelocity());
-      SmartDashboard.putNumber("drivetrain/rLeftVelocity",  rearLeftMotor.getEncoder().getVelocity());
-      SmartDashboard.putNumber("drivetrain/fRightVelocity", frontRightMotor.getEncoder().getVelocity());
-      SmartDashboard.putNumber("drivetrain/rRightVelocity", rearRightMotor.getEncoder().getVelocity());
-      SmartDashboard.putNumber("drivetrain/xVelocity", getXVelocity());
-      SmartDashboard.putNumber("drivetrain/yVelocity", getYVelocity());
-      SmartDashboard.putNumber("drivetrain/heading", gyro.getAngle());
-      SmartDashboard.putNumber("drivetrain/angularVelocity", gyro.getRate());
+      SmartDashboard.putNumber("drivetrain_fLeftVelocity",  frontLeftMotor.getEncoder().getVelocity());
+      SmartDashboard.putNumber("drivetrain_rLeftVelocity",  rearLeftMotor.getEncoder().getVelocity());
+      SmartDashboard.putNumber("drivetrain_fRightVelocity", frontRightMotor.getEncoder().getVelocity());
+      SmartDashboard.putNumber("drivetrain_rRightVelocity", rearRightMotor.getEncoder().getVelocity());
+      SmartDashboard.putNumber("drivetrain_xVelocity", getXVelocity());
+      SmartDashboard.putNumber("drivetrain_yVelocity", getYVelocity());
+      SmartDashboard.putNumber("drivetrain_heading", gyro.getAngle());
+      SmartDashboard.putNumber("drivetrain_angularVelocity", gyro.getRate());
 
       sb_field.setRobotPose(getPose());
     }

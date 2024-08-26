@@ -305,7 +305,7 @@ public class Superstructure implements ISubsystem{
         default:
             break;
       }
-
+      receiveOptions();
 
       handleDriving();
       handleInputs();
@@ -313,14 +313,16 @@ public class Superstructure implements ISubsystem{
       for (ISubsystem s : this.subsystems){
         s.onLoop();
       }
+
+      submitTelemetry();
     }
 
 
 
     @Override
     public void submitTelemetry(){
-      SmartDashboard.putString("superstructure/robotState", this.getState().toString());
-      SmartDashboard.putString("superstructure/drivemode", drivetrain.getDriveMode().toString());
+      SmartDashboard.putString("superstructure_robotState", this.getState().toString());
+      SmartDashboard.putString("superstructure_drivemode", drivetrain.getDriveMode().toString());
     }
 
     @Override

@@ -97,16 +97,18 @@ public class Arm implements ISubsystem{
 
     @Override
     public void onLoop(){
+        receiveOptions();
         this.motor.getPIDController().setReference(this.setPoint, ControlType.kPosition);
+        submitTelemetry();
     }
 
 
 
     @Override 
     public void submitTelemetry(){
-        SmartDashboard.putNumber("arm/position", this.getPosition());
-        SmartDashboard.putNumber("arm/velocity", this.getVelocity());
-        SmartDashboard.putNumber("arm/setpoint", this.setPoint);
+        SmartDashboard.putNumber("arm_position", this.getPosition());
+        SmartDashboard.putNumber("arm_velocity", this.getVelocity());
+        SmartDashboard.putNumber("arm_setpoint", this.setPoint);
     }
 
     @Override

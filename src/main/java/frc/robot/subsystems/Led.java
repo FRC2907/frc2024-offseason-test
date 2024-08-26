@@ -15,8 +15,10 @@ public class Led implements ISubsystem{
     private int[] array;
 
     private Led(PWMSparkMax led){
+      this.led = led;
+
       m_ledBuffer = new AddressableLEDBuffer(50);
-      
+
       array = new int[m_ledBuffer.getLength()];
       for (int i = 0; i < m_ledBuffer.getLength(); i++){
         array[i] = i;
@@ -84,13 +86,16 @@ public class Led implements ISubsystem{
       if (led.get() == Control.led.black){
         return "black";
       }
-      return null;
+      return "null";
     }
 
     
 
     @Override
-    public void onLoop(){}
+    public void onLoop(){
+      receiveOptions();
+      submitTelemetry();
+    }
 
 
     public void    red() { led.set(Control.led.red); }
@@ -106,7 +111,7 @@ public class Led implements ISubsystem{
 
     @Override
     public void submitTelemetry(){
-      SmartDashboard.putString("led/color", this.getColor());
+      SmartDashboard.putString("led_color", this.getColor());
     }
 
     @Override
