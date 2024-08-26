@@ -51,7 +51,8 @@ public class Intake implements ISubsystem{
       this.setPoint = _setPoint;
     }
     public boolean reachedSetPoint(){
-      return Math.abs(this.fastMotor.getEncoder().getVelocity()) < Control.intake.kVelocityHysteresis;
+      return Math.abs(Math.abs(this.fastMotor.getEncoder().getVelocity()) - Math.abs(setPoint))
+           < Control.intake.kVelocityHysteresis;
     }
 
 

@@ -110,7 +110,7 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
     public void setFieldDriveInputs(double xSpeed, double ySpeed, double zRotation){ //TODO check the things? also convert from radians to degrees
       ChassisSpeeds chassisSpeeds = new ChassisSpeeds(
         xSpeed, ySpeed, 
-        this.isLocked() ? headingController.calculate(getHeading().getDegrees()) : zRotation);
+        this.isLocked() ? zRotation : headingController.calculate(getHeading().getDegrees()));
       chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, gyro.getRotation2d());
       MecanumDriveWheelSpeeds wheelSpeeds = MechanismDimensions.drivetrain.DRIVE_KINEMATICS
         .toWheelSpeeds(chassisSpeeds);
@@ -200,10 +200,10 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
 
       this.poseEstimator.update(this.gyro.getRotation2d(), this.wheelPositions);
 
-      //limelightDoodad();
+      limelightDoodad();
     }
 
-    /*private void limelightDoodad(){
+    private void limelightDoodad(){
       if (Util.isBlue()){
         limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
       } else {
@@ -215,7 +215,7 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
             limelightMeasurement.pose,
             limelightMeasurement.timestampSeconds);
       }
-    } */
+    } 
 
 
 

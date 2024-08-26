@@ -51,7 +51,8 @@ public class Shooter implements ISubsystem{
         this.setPoint = _setPoint;
     }
     public boolean reachedSetPoint(){
-        return Math.abs(this.motor.getEncoder().getVelocity()) < Control.shooter.kVelocityHysteresis;
+        return Math.abs(Math.abs(this.motor.getEncoder().getVelocity()) - Math.abs(setPoint)) 
+             < Control.shooter.kVelocityHysteresis;
     }
 
 

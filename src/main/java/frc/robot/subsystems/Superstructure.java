@@ -136,22 +136,22 @@ public class Superstructure implements ISubsystem{
         switch(drivetrain.getDriveMode()){
           case FIELD_FORWARD:
             if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
-              drivetrain.setFieldDriveInputs(driver.getLeftY(), - driver.getLeftX(), driver.getRightX());
+              drivetrain.setFieldDriveInputs( - driver.getLeftY(), - driver.getLeftX(), driver.getRightX());
             }
             break;
           case FIELD_REVERSED:
             if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
-              drivetrain.setFieldDriveInputs( - driver.getLeftY(), driver.getLeftX(), - driver.getRightX()); //check??
+              drivetrain.setFieldDriveInputs(driver.getLeftY(), driver.getLeftX(), - driver.getRightX()); //check??
             }
             break;
           case LOCAL_FORWARD:
             if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
-              drivetrain.setLocalDriveInputs(driver.getLeftY(), - driver.getLeftX(), driver.getRightX());
+              drivetrain.setLocalDriveInputs( - driver.getLeftY(), - driver.getLeftX(), driver.getRightX());
             }
             break;
           case LOCAL_REVERSED:
             if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
-              drivetrain.setLocalDriveInputs( - driver.getLeftY(), driver.getLeftX(), - driver.getRightX()); //check??
+              drivetrain.setLocalDriveInputs(driver.getLeftY(), driver.getLeftX(), - driver.getRightX()); //check??
             }
             break;
           default:
