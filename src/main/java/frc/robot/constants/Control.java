@@ -86,6 +86,8 @@ public class Control {
         public static final double kMaxSpeed = 100;
         public static final double kAverageCurrent = 0;
         public static final double kCurrentHystereis = 2;
+
+        public static final int kArrayLength = 50;
     }
 
 

@@ -22,6 +22,7 @@ import frc.robot.constants.MechanismDimensions;
 import frc.robot.constants.MotorControllers;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.Util;
+import frc.robot.util.LimelightHelpers.PoseEstimate;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -57,7 +58,8 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
       this.gyro = new AHRS(SPI.Port.kMXP);
       this.rotationLock = false;
       this.desiredHeading = gyro.getAngle();
-      this.headingController.setP(2);
+      this.headingController = new PIDController(2, 1, 1);
+      this.limelightMeasurement = new PoseEstimate();
 
       this.sb_field = new Field2d();
       SmartDashboard.putData(sb_field);

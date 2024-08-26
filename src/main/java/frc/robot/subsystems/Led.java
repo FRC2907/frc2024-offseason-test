@@ -15,6 +15,8 @@ public class Led implements ISubsystem{
     private int[] array;
 
     private Led(PWMSparkMax led){
+      m_ledBuffer = new AddressableLEDBuffer(50);
+      
       array = new int[m_ledBuffer.getLength()];
       for (int i = 0; i < m_ledBuffer.getLength(); i++){
         array[i] = i;

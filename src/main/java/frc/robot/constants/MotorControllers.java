@@ -23,7 +23,7 @@ public class MotorControllers {
     public static final CANSparkMax drivetrainfl(){
         if (_drivetrainfl == null){
             _drivetrainfl = new CANSparkMax(Ports.CAN.drivetrain.FRONT_LEFT, MotorType.kBrushless);
-            _drivetrainrr.setInverted(false);
+            _drivetrainfl.setInverted(false);
             _drivetrainfl.getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
         }
         return _drivetrainfl;
@@ -31,7 +31,7 @@ public class MotorControllers {
     public static final CANSparkMax drivetrainrl(){
         if (_drivetrainrl == null){
             _drivetrainrl = new CANSparkMax(Ports.CAN.drivetrain.REAR_LEFT, MotorType.kBrushless);
-            _drivetrainrr.setInverted(false);
+            _drivetrainrl.setInverted(false);
             _drivetrainrl.getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
         }
         return _drivetrainrl;
@@ -39,7 +39,7 @@ public class MotorControllers {
     public static final CANSparkMax drivetrainfr(){
         if (_drivetrainfr == null){
             _drivetrainfr = new CANSparkMax(Ports.CAN.drivetrain.FRONT_RIGHT, MotorType.kBrushless);
-            _drivetrainrr.setInverted(false);
+            _drivetrainfr.setInverted(false);
             _drivetrainfr.getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
         }
         return _drivetrainfr;

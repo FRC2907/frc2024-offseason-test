@@ -30,6 +30,7 @@ public class Shooter implements ISubsystem{
         this.noteScored = false;
         this.head = 0;
         this.averageCurrent = Control.shooter.kAverageCurrent;
+        this.currentOutputArr = new Double[Control.shooter.kArrayLength];
         for (int i = 0; i < currentOutputArr.length; i++){
             currentOutputArr[i] = averageCurrent;
           }
