@@ -14,18 +14,25 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.FieldElements;
 import frc.robot.constants.MechanismDimensions;
 import frc.robot.constants.MotorControllers;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.Util;
 
-import com.kauailabs.navx.frc.AHRS;
+import java.util.Optional;
 
-public class Drivetrain extends MecanumDrive implements ISubsystem{
+import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
+public class Drivetrain extends SubsystemBase implements ISubsystem{
     private CANSparkMax frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
     private double frontLeftSpeed, rearLeftSpeed, frontRightSpeed, rearRightSpeed;
     private double desiredHeading;
@@ -48,7 +55,6 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
     }
 
     private Drivetrain(CANSparkMax frontLeft, CANSparkMax rearLeft, CANSparkMax frontRight, CANSparkMax rearRight){
-      super(frontLeft, rearLeft, frontRight, rearRight);
       this.frontLeftMotor = frontLeft;
       this.rearLeftMotor = rearLeft;
       this.frontRightMotor = frontRight;
@@ -75,7 +81,10 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
         new Pose2d(),
         VecBuilder.fill(0.05, 0.05, Units.Degrees.of(5.0).in(Units.Radians)),
         VecBuilder.fill(0.5,  0.5,  Units.Degrees.of(30.0).in(Units.Radians))); //TODO change numbers maybe
-    }
+
+      autoConfigure();
+      PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
+  }
 
     private static Drivetrain instance;
 
@@ -107,10 +116,30 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
       frontRightSpeed = wheelSpeeds.frontRightMetersPerSecond;
       rearRightSpeed =  wheelSpeeds.rearRightMetersPerSecond;
     }
+    public void setLocalDriveInputs(ChassisSpeeds chassisSpeeds){
+      MecanumDriveWheelSpeeds wheelSpeeds = MechanismDimensions.drivetrain.DRIVE_KINEMATICS
+        .toWheelSpeeds(chassisSpeeds);
+      
+      frontLeftSpeed =  wheelSpeeds.frontLeftMetersPerSecond;
+      rearLeftSpeed =   wheelSpeeds.rearLeftMetersPerSecond;
+      frontRightSpeed = wheelSpeeds.frontRightMetersPerSecond;
+      rearRightSpeed =  wheelSpeeds.rearRightMetersPerSecond;
+    }
+
     public void setFieldDriveInputs(double xSpeed, double ySpeed, double zRotation){ //TODO check the things? also convert from radians to degrees
       ChassisSpeeds chassisSpeeds = new ChassisSpeeds(
         xSpeed, ySpeed, 
-        this.isLocked() ? zRotation : headingController.calculate(getHeading().getDegrees()));
+        this.isLocked() ? headingController.calculate(getHeading().getDegrees()) : zRotation);
+      chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, gyro.getRotation2d());
+      MecanumDriveWheelSpeeds wheelSpeeds = MechanismDimensions.drivetrain.DRIVE_KINEMATICS
+        .toWheelSpeeds(chassisSpeeds);
+      
+      frontLeftSpeed =  wheelSpeeds.frontLeftMetersPerSecond;
+      rearLeftSpeed =   wheelSpeeds.rearLeftMetersPerSecond;
+      frontRightSpeed = wheelSpeeds.frontRightMetersPerSecond;
+      rearRightSpeed =  wheelSpeeds.rearRightMetersPerSecond;
+    }
+    public void setFieldDriveInputs(ChassisSpeeds chassisSpeeds){
       chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, gyro.getRotation2d());
       MecanumDriveWheelSpeeds wheelSpeeds = MechanismDimensions.drivetrain.DRIVE_KINEMATICS
         .toWheelSpeeds(chassisSpeeds);
@@ -132,6 +161,9 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
       MecanumDriveWheelSpeeds wheelSpeeds = new MecanumDriveWheelSpeeds(flSpeed, frSpeed, rlSpeed, rrSpeed);
       return MechanismDimensions.drivetrain.DRIVE_KINEMATICS.toChassisSpeeds(wheelSpeeds);
     }
+    public ChassisSpeeds getChassisSpeeds(){
+      return getChassisSpeeds(frontLeftSpeed, frontRightSpeed, rearLeftSpeed, rearRightSpeed);
+    }
 
     public void lock(){ //more fun trigonometry, see arm.speaker() for more details
       Translation2d speaker = FieldElements.kSpeakerHole.toTranslation2d();
@@ -141,6 +173,15 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
       this.rotationLock = true;
       this.desiredHeading = Math.acos(yDistance / distance);
       this.headingController.setSetpoint(desiredHeading);
+    }
+    public Rotation2d lockPP(){ 
+      Translation2d speaker = FieldElements.kSpeakerHole.toTranslation2d();
+      double distance = speaker.getDistance(this.getPose().getTranslation());
+      double yDistance = Math.abs(speaker.getX() - this.getPose().getX());
+
+      this.rotationLock = true;
+      this.desiredHeading = Math.acos(yDistance / distance);
+      return new Rotation2d(Units.Degrees.of(desiredHeading));
     }
     public void unlock(){
       this.rotationLock = false;
@@ -189,6 +230,9 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
 
     public Pose2d getPose(){
       return this.poseEstimator.getEstimatedPosition();
+    }
+    public void resetPose(Pose2d pose){
+      this.poseEstimator.resetPosition(gyro.getRotation2d(), wheelPositions, pose);
     }
 
     private void updatePoseFromSensors(){
@@ -252,4 +296,38 @@ public class Drivetrain extends MecanumDrive implements ISubsystem{
 
     @Override
     public void receiveOptions(){}
+
+
+
+    public void autoConfigure(){
+      AutoBuilder.configureHolonomic(
+            this::getPose, // Robot pose supplier
+            this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+            this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            this::setLocalDriveInputs, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+            new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                    4.5, // Max module speed, in m/s
+                    MechanismDimensions.drivetrain.FRONT_LEFT_LOCATION.getDistance(new Translation2d()), // Drive base radius in meters. Distance from robot center to furthest module.
+                    new ReplanningConfig() // Default path replanning config. See the API for the options here
+            ),
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+              return !Util.isBlue();
+            },
+            this // Reference to this subsystem to set requirements
+    );
+    }
+
+    public Optional<Rotation2d> getRotationTargetOverride(){
+      if (Intake.getInstance().hasNote()){
+        return Optional.of(lockPP());
+      } else {
+        return Optional.empty();
+      }
+    }
   }

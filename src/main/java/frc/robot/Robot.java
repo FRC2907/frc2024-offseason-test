@@ -4,10 +4,8 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.ISubsystem;
 import frc.robot.subsystems.Superstructure;
 
@@ -22,16 +20,13 @@ public class Robot extends TimedRobot {
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
-  PS4Controller driver = new PS4Controller(0);
-  //PS4Controller operator = new PS4Controller(1);
-  PS4Controller operator = driver;
-
-  Timer autoTimer = new Timer();
+  private Timer autoTimer;
 
   private ISubsystem everything;
 
   @Override
   public void robotInit() {
+    autoTimer = new Timer();
     everything = Superstructure.getInstance();
   } 
 

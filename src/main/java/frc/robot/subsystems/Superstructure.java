@@ -137,21 +137,29 @@ public class Superstructure implements ISubsystem{
           case FIELD_FORWARD:
             if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
               drivetrain.setFieldDriveInputs( - driver.getLeftY(), - driver.getLeftX(), driver.getRightX());
+            } else {
+              drivetrain.stop();
             }
             break;
           case FIELD_REVERSED:
             if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
               drivetrain.setFieldDriveInputs(driver.getLeftY(), driver.getLeftX(), - driver.getRightX()); //check??
+            } else {
+              drivetrain.stop();
             }
             break;
           case LOCAL_FORWARD:
             if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
               drivetrain.setLocalDriveInputs( - driver.getLeftY(), - driver.getLeftX(), driver.getRightX());
+            } else {
+              drivetrain.stop();
             }
             break;
           case LOCAL_REVERSED:
             if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
               drivetrain.setLocalDriveInputs(driver.getLeftY(), driver.getLeftX(), - driver.getRightX()); //check??
+            } else {
+              drivetrain.stop();
             }
             break;
           default:
@@ -187,9 +195,11 @@ public class Superstructure implements ISubsystem{
         drivetrain.localFieldSwitch();
       }
 
-      if (operator.getSquareButton()){
+      if (operator.getSquareButtonPressed()){
+        drivetrain.lock();
+        arm.speaker();
         shooter.speaker();
-        if (shooter.reachedSetPoint()){
+        if (shooter.reachedSetPoint() && arm.reachedSetPoint()){
             intake.shoot();
         }
       }
@@ -200,6 +210,7 @@ public class Superstructure implements ISubsystem{
         shooter.manualShoot();
       }
       if (operator.getR2ButtonReleased()){
+        shooter.manualShoot();
         intake.shoot();
       }
       if (operator.getR1ButtonPressed()){

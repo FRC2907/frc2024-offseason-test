@@ -101,7 +101,5 @@ public class Control {
         public static final double violet = 0.91;
         public static final double white = 0.93;
         public static final double black = 0.99;
-
-        public static final Double[] colors = new Double[8];
     }
 }

@@ -12,13 +12,13 @@ public class MechanismDimensions {
 
     public static class arm {
         public static final double GEAR_RATIO = 1; //TODO find
-        public static final double kLength = 1; //TODO find length of arm
-        public static final double kHeight = 1; //TODO find height of arm above ground
+        public static final double kLength = 1; //TODO find length of arm inches
+        public static final double kHeight = 1; //TODO find height of arm above ground inches
     }
 
     public static class drivetrain {
         //https://www.andymark.com/products/toughbox-micro-s
-        public static final double GEAR_RATIO = 9.13; //TODO check 
+        public static final double GEAR_RATIO = 5.95;  
         public static final double WHEEL_DIAMETER = 8; //inches
 
         //22.875 in. edge to edge wide, 20.5 in. edge to edge long

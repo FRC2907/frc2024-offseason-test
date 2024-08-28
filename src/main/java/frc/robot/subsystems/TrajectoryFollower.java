@@ -8,7 +8,7 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.Timer;
 
-public class TrajectoryFollower {
+public class TrajectoryFollower { //just delete this, i don't want do
     private Trajectory trajectory;
     private Timer timer;
     private MecanumDriveKinematics kinematics;
