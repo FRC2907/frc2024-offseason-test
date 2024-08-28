@@ -23,11 +23,13 @@ public class Robot extends TimedRobot {
   private Timer autoTimer;
 
   private ISubsystem everything;
+  private RobotContainer robotContainer;
 
   @Override
   public void robotInit() {
     autoTimer = new Timer();
     everything = Superstructure.getInstance();
+    robotContainer = new RobotContainer();
   } 
 
   @Override
@@ -38,6 +40,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     autoTimer.restart();
+    robotContainer.getAutonomousCommand();
   }
 
   @Override
