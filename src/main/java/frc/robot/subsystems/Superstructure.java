@@ -1,8 +1,11 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.proto.Trajectory;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.auto.commands.IntakeNote;
+import frc.robot.auto.commands.ShootNote;
 import frc.robot.subsystems.Drivetrain.DriveMode;
 import frc.robot.util.Util;
 import edu.wpi.first.wpilibj.PS5Controller;
@@ -23,8 +26,6 @@ public class Superstructure implements ISubsystem{
     private RobotState state;
     private boolean automateScoring;
 
-    private Trajectory trajectory;
-
 
 
     public enum RobotState {
@@ -42,14 +43,16 @@ public class Superstructure implements ISubsystem{
     }
 
     private Superstructure(RobotState _state, boolean _automation){
-        this.state = _state;
-        this.automateScoring(_automation);
-        this.arm = Arm.getInstance();
-        this.drivetrain = Drivetrain.getInstance();
-        this.intake = Intake.getInstance();
-        this.led = Led.getInstance();
-        this.shooter = Shooter.getInstance();
-        this.subsystems = new ISubsystem[] { arm, drivetrain, intake, led, shooter };
+      this.state = _state;
+      this.automateScoring(_automation);
+      this.arm = Arm.getInstance();
+      this.drivetrain = Drivetrain.getInstance();
+      this.intake = Intake.getInstance();
+      this.led = Led.getInstance();
+      this.shooter = Shooter.getInstance();
+      this.subsystems = new ISubsystem[] { arm, drivetrain, intake, led, shooter };
+      NamedCommands.registerCommand("Intake Note", new IntakeNote());
+      NamedCommands.registerCommand("Shoot Note", new ShootNote());
     } 
 
     private Superstructure(){

@@ -244,10 +244,10 @@ public class Drivetrain extends SubsystemBase implements ISubsystem{
 
       this.poseEstimator.update(this.gyro.getRotation2d(), this.wheelPositions);
 
-      limelightDoodad();
+      //limelightDoodad();
     }
 
-    private void limelightDoodad(){
+    /*private void limelightDoodad(){
       if (Util.isBlue()){
         limelightMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight");
       } else {
@@ -259,7 +259,7 @@ public class Drivetrain extends SubsystemBase implements ISubsystem{
             limelightMeasurement.pose,
             limelightMeasurement.timestampSeconds);
       }
-    } 
+    } */
 
 
 
