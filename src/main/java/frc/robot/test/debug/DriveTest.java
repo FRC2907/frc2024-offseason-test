@@ -60,6 +60,12 @@ public class DriveTest extends TimedRobot{
             bottom_right.set(0.1);
         }
     }
+    private void accelTest(){
+        top_left.set(1);
+        bottom_left.set(1);
+        top_right.set(1);
+        bottom_right.set(1);
+    }
 
     @Override
     public void autonomousInit(){
@@ -81,5 +87,6 @@ public class DriveTest extends TimedRobot{
         //dt.driveCartesian(driver.getLeftX(), driver.getLeftY(), driver.getRightX());
         dt.driveCartesian(driver.getLeftX(), driver.getLeftY(), driver.getRightX(), gyro.getRotation2d());
         breakIn();  //use to break in motors for 30 minutes
+        accelTest();
     }
 }
