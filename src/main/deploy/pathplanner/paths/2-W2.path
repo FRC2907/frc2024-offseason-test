@@ -17,11 +17,11 @@
     {
       "anchor": {
         "x": 3.0,
-        "y": 7.0
+        "y": 5.55
       },
       "prevControl": {
-        "x": 1.618815057535328,
-        "y": 7.087539890719592
+        "x": 2.0,
+        "y": 5.55
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,7 +50,7 @@
     },
     {
       "name": "Intake",
-      "waypointRelativePos": 0.7,
+      "waypointRelativePos": 0.6,
       "command": {
         "type": "sequential",
         "data": {
@@ -74,7 +74,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -170.0,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
