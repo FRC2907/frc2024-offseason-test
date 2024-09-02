@@ -3,32 +3,54 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4,
-        "y": 5.5
+        "x": 3.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3999999999999995,
-        "y": 5.5
+        "x": 5.472100367759634,
+        "y": 6.810218332216113
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0,
-        "y": 5.55
+        "x": 5.6366977896863055,
+        "y": 3.96062546511058
       },
       "prevControl": {
-        "x": 2.0,
-        "y": 5.55
+        "x": 4.335881622076527,
+        "y": 4.02593260838151
+      },
+      "nextControl": {
+        "x": 7.1937728763161335,
+        "y": 3.8824529082972847
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 8.3,
+        "y": 0.8
+      },
+      "prevControl": {
+        "x": 6.8197417597842716,
+        "y": 0.5658036378729396
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.6,
+      "rotationDegrees": 130.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -50,7 +72,7 @@
     },
     {
       "name": "Intake",
-      "waypointRelativePos": 0.6,
+      "waypointRelativePos": 1.3,
       "command": {
         "type": "sequential",
         "data": {
@@ -73,14 +95,14 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "2-Wing",
+  "folder": "W1-Mid",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": -170.0,
     "velocity": 0
   },
   "useDefaultConstraints": true

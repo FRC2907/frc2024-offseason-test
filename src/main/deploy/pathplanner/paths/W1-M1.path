@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4,
-        "y": 5.5
+        "x": 3.0,
+        "y": 7.0
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.3999999999999995,
-        "y": 5.5
+        "x": 4.0,
+        "y": 7.0
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.0,
-        "y": 5.55
+        "x": 8.3,
+        "y": 7.45
       },
       "prevControl": {
-        "x": 2.0,
-        "y": 5.55
+        "x": 7.300000000000001,
+        "y": 7.45
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,7 +50,7 @@
     },
     {
       "name": "Intake",
-      "waypointRelativePos": 0.6,
+      "waypointRelativePos": 0.65,
       "command": {
         "type": "sequential",
         "data": {
@@ -78,9 +78,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "2-Wing",
+  "folder": "W1-Mid",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": -170.0,
     "velocity": 0
   },
   "useDefaultConstraints": true
