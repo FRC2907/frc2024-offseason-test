@@ -29,7 +29,7 @@ public class Intake implements ISubsystem{
         currentOutputArr[i] = averageCurrent;
       }
       this.head = 0;
-      this.hasNote = false;
+      this.hasNote = true;
     }
 
     private static Intake instance;
