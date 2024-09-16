@@ -1,7 +1,15 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkMax;
+import java.util.Optional;
+
+import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkMax;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
@@ -22,15 +30,6 @@ import frc.robot.constants.MechanismDimensions;
 import frc.robot.constants.MotorControllers;
 import frc.robot.util.LimelightHelpers;
 import frc.robot.util.Util;
-
-import java.util.Optional;
-
-import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 
 public class Drivetrain extends SubsystemBase implements ISubsystem{
     private CANSparkMax frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
@@ -110,20 +109,12 @@ public class Drivetrain extends SubsystemBase implements ISubsystem{
         xSpeed, ySpeed, zRotation);
       MecanumDriveWheelSpeeds wheelSpeeds = MechanismDimensions.drivetrain.DRIVE_KINEMATICS
         .toWheelSpeeds(chassisSpeeds);
-      
-      frontLeftSpeed =  wheelSpeeds.frontLeftMetersPerSecond;
-      rearLeftSpeed =   wheelSpeeds.rearLeftMetersPerSecond;
-      frontRightSpeed = wheelSpeeds.frontRightMetersPerSecond;
-      rearRightSpeed =  wheelSpeeds.rearRightMetersPerSecond;
+      wheelSpeedsToActualSpeeds(wheelSpeeds);
     }
     public void setLocalDriveInputs(ChassisSpeeds chassisSpeeds){
       MecanumDriveWheelSpeeds wheelSpeeds = MechanismDimensions.drivetrain.DRIVE_KINEMATICS
         .toWheelSpeeds(chassisSpeeds);
-      
-      frontLeftSpeed =  wheelSpeeds.frontLeftMetersPerSecond;
-      rearLeftSpeed =   wheelSpeeds.rearLeftMetersPerSecond;
-      frontRightSpeed = wheelSpeeds.frontRightMetersPerSecond;
-      rearRightSpeed =  wheelSpeeds.rearRightMetersPerSecond;
+      wheelSpeedsToActualSpeeds(wheelSpeeds);
     }
 
     public void setFieldDriveInputs(double xSpeed, double ySpeed, double zRotation){ //TODO check the things? also convert from radians to degrees
@@ -133,23 +124,21 @@ public class Drivetrain extends SubsystemBase implements ISubsystem{
       chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, gyro.getRotation2d());
       MecanumDriveWheelSpeeds wheelSpeeds = MechanismDimensions.drivetrain.DRIVE_KINEMATICS
         .toWheelSpeeds(chassisSpeeds);
-      
-      frontLeftSpeed =  wheelSpeeds.frontLeftMetersPerSecond;
-      rearLeftSpeed =   wheelSpeeds.rearLeftMetersPerSecond;
-      frontRightSpeed = wheelSpeeds.frontRightMetersPerSecond;
-      rearRightSpeed =  wheelSpeeds.rearRightMetersPerSecond;
+      wheelSpeedsToActualSpeeds(wheelSpeeds);
     }
     public void setFieldDriveInputs(ChassisSpeeds chassisSpeeds){
       chassisSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(chassisSpeeds, gyro.getRotation2d());
       MecanumDriveWheelSpeeds wheelSpeeds = MechanismDimensions.drivetrain.DRIVE_KINEMATICS
         .toWheelSpeeds(chassisSpeeds);
-      
+      wheelSpeedsToActualSpeeds(wheelSpeeds);
+    }
+
+    public void wheelSpeedsToActualSpeeds(MecanumDriveWheelSpeeds wheelSpeeds){
       frontLeftSpeed =  wheelSpeeds.frontLeftMetersPerSecond;
       rearLeftSpeed =   wheelSpeeds.rearLeftMetersPerSecond;
       frontRightSpeed = wheelSpeeds.frontRightMetersPerSecond;
       rearRightSpeed =  wheelSpeeds.rearRightMetersPerSecond;
     }
-
     public void sendMotorInputs(double frontLeft, double rearLeft, double frontRight, double rearRight){
       this.frontLeftMotor .getPIDController().setReference(frontLeft,  ControlType.kVelocity);
       this.rearLeftMotor  .getPIDController().setReference(rearLeft,   ControlType.kVelocity);
