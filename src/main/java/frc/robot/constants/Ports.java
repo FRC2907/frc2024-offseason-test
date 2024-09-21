@@ -3,7 +3,7 @@ package frc.robot.constants;
 public class Ports {
     public static class CAN { //TODO all can ids are currently placeholders
         public static class arm {
-            public static final int[] MOTORS = { 5, 6 };
+            public static final int[] MOTORS = { 14 };
         }
         
         public static class drivetrain {

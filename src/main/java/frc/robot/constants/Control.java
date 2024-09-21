@@ -18,8 +18,8 @@ public class Control {
         public static final double kPositionConversionFactor = MechanismDimensions.arm.GEAR_RATIO 
                                                              * 360;
                                                             
-        public static final double kP = 1;
-        public static final double kD = 1;
+        public static final double kP = 0.1;
+        public static final double kD = 10;
 
         public static final double kStartPosition = 0; //deg 
         public static final double kAmpPosition = 50;     

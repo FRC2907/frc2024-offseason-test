@@ -1,5 +1,7 @@
 package frc.robot.test.debug;
 
-public class ShooterTest {
+import edu.wpi.first.wpilibj.TimedRobot;
+
+public class ShooterTest extends TimedRobot{
     
 }
