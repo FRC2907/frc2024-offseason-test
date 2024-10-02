@@ -16,6 +16,7 @@ public class ArmTest extends TimedRobot{
     @Override
     public void robotInit(){
         this.arm.restoreFactoryDefaults();
+        this.arm.burnFlash();
         this.arm.getEncoder().setPosition(0);
         this.arm.getPIDController().setP(Control.arm.kP);
         this.arm.getPIDController().setD(Control.arm.kD);
@@ -26,8 +27,12 @@ public class ArmTest extends TimedRobot{
     }
 
     @Override
+    public void teleopInit(){
+        this.arm.getEncoder().setPosition(0);
+        this.arm.getPIDController().setOutputRange(-0.4, 0.4);
+    }
+    @Override
     public void teleopPeriodic(){
-        
-        this.arm.getPIDController().setReference((1/2), ControlType.kPosition);
+        this.arm.getPIDController().setReference(100, ControlType.kPosition);
     }
 }
