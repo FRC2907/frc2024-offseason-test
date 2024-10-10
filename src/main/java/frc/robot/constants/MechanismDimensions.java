@@ -18,7 +18,7 @@ public class MechanismDimensions {
 
     public static class drivetrain {
         //https://www.andymark.com/products/toughbox-micro-s
-        public static final double GEAR_RATIO = 5.95;  
+        public static final double GEAR_RATIO = 1 / 5.95;  
         public static final double WHEEL_DIAMETER = 8; //inches
 
         //22.875 in. edge to edge wide, 20.5 in. edge to edge long

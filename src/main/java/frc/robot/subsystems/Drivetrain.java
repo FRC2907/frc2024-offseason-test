@@ -22,6 +22,7 @@ import edu.wpi.first.math.kinematics.MecanumDriveWheelPositions;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,6 +35,7 @@ import frc.robot.util.Util;
 public class Drivetrain extends SubsystemBase implements ISubsystem{
     private CANSparkMax frontLeftMotor, rearLeftMotor, frontRightMotor, rearRightMotor;
     private double frontLeftSpeed, rearLeftSpeed, frontRightSpeed, rearRightSpeed;
+    private MecanumDrive dt;
     private double desiredHeading;
     private boolean rotationLock;
 
@@ -58,11 +60,13 @@ public class Drivetrain extends SubsystemBase implements ISubsystem{
       this.rearLeftMotor = rearLeft;
       this.frontRightMotor = frontRight;
       this.rearRightMotor = rearRight;
-      this.mode = DriveMode.FIELD_FORWARD; 
+      this.mode = DriveMode.LOCAL_FORWARD; 
       this.gyro = new AHRS(SPI.Port.kMXP);
       this.rotationLock = false;
       this.desiredHeading = gyro.getAngle();
       this.headingController = new PIDController(2, 1, 1);
+
+      this.dt = new MecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
 
       this.sb_field = new Field2d();
       SmartDashboard.putData(sb_field);
@@ -116,6 +120,12 @@ public class Drivetrain extends SubsystemBase implements ISubsystem{
         .toWheelSpeeds(chassisSpeeds);
       wheelSpeedsToActualSpeeds(wheelSpeeds);
     }
+    public void setLocalDriveInputsDT(double driverX, double driverY, double driverZ){
+      this.dt.driveCartesian(driverX, driverY, driverZ);
+    }
+    public void setLocalDriveInputsDT(ChassisSpeeds speeds){
+      uglyCartesianIK(speeds);
+    }
 
     public void setFieldDriveInputs(double xSpeed, double ySpeed, double zRotation){ //TODO check the things? also convert from radians to degrees
       ChassisSpeeds chassisSpeeds = new ChassisSpeeds(
@@ -131,6 +141,24 @@ public class Drivetrain extends SubsystemBase implements ISubsystem{
       MecanumDriveWheelSpeeds wheelSpeeds = MechanismDimensions.drivetrain.DRIVE_KINEMATICS
         .toWheelSpeeds(chassisSpeeds);
       wheelSpeedsToActualSpeeds(wheelSpeeds);
+    }
+    public void setFieldDriveInputsDT(double driverX, double driverY, double driverZ){
+      this.dt.driveCartesian(driverX, driverY, driverZ, getGyroHeading());
+    }
+
+    public void uglyCartesianIK(ChassisSpeeds speeds){
+      frontLeftMotor.set(MecanumDrive.driveCartesianIK(speeds.vxMetersPerSecond, 
+                                                       speeds.vyMetersPerSecond, 
+                                                       speeds.omegaRadiansPerSecond).frontLeft);
+      rearLeftMotor.set(MecanumDrive.driveCartesianIK(speeds.vxMetersPerSecond, 
+                                                      speeds.vyMetersPerSecond, 
+                                                      speeds.omegaRadiansPerSecond).rearLeft);
+      frontRightMotor.set(MecanumDrive.driveCartesianIK(speeds.vxMetersPerSecond, 
+                                                        speeds.vyMetersPerSecond, 
+                                                        speeds.omegaRadiansPerSecond).frontRight);
+      rearRightMotor.set(MecanumDrive.driveCartesianIK(speeds.vxMetersPerSecond, 
+                                                       speeds.vyMetersPerSecond, 
+                                                       speeds.omegaRadiansPerSecond).rearRight);
     }
 
     public void wheelSpeedsToActualSpeeds(MecanumDriveWheelSpeeds wheelSpeeds){
@@ -187,6 +215,12 @@ public class Drivetrain extends SubsystemBase implements ISubsystem{
     }
     public Rotation2d getHeading(){
       return this.getPose().getRotation();
+    }
+    public Rotation2d getGyroHeading(){
+      return this.gyro.getRotation2d();
+    }
+    public double getAngle(){
+      return this.gyro.getAngle();
     }
 
 

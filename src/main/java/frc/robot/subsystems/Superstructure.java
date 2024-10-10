@@ -13,10 +13,10 @@ import edu.wpi.first.wpilibj.PS5Controller;
 
 
 public class Superstructure implements ISubsystem{
-    private Arm arm;
-    //private Drivetrain drivetrain;
+    //private Arm arm;
+    private Drivetrain drivetrain;
     //private Intake intake;
-    private Led led;
+    //private Led led;
     //private Shooter shooter;
     private ISubsystem[] subsystems;
     
@@ -45,12 +45,12 @@ public class Superstructure implements ISubsystem{
     private Superstructure(RobotState _state, boolean _automation){
       this.state = _state;
       this.automateScoring(_automation);
-      this.arm = Arm.getInstance();
-      //this.drivetrain = Drivetrain.getInstance();
+      //this.arm = Arm.getInstance();
+      this.drivetrain = Drivetrain.getInstance();
       //this.intake = Intake.getInstance();
-      this.led = Led.getInstance();
+      //this.led = Led.getInstance();
       //this.shooter = Shooter.getInstance();
-    this.subsystems = new ISubsystem[] { arm, /*drivetrain, intake,*/ led, /*shooter*/ };
+      this.subsystems = new ISubsystem[] { /*arm,*/ drivetrain, /*intake, led, /*shooter*/ };
       NamedCommands.registerCommand("Intake Note", new IntakeNote());
       NamedCommands.registerCommand("Shoot Note", new ShootNote());
     } 
@@ -102,7 +102,7 @@ public class Superstructure implements ISubsystem{
       this.state = RobotState.FOLLOWING_TRAJECTORY;
     }
     public void neutralPosition() {
-        if (/*intake.hasNote()*/ true){
+        if (/*intake.hasNote() == */true){
             this.state = RobotState.HOLDING_NOTE;
             operator.setRumble(RumbleType.kBothRumble, 0.3);
         } else {
@@ -122,7 +122,7 @@ public class Superstructure implements ISubsystem{
 
 
 
-    /*private void handleDriving(){
+    private void handleDriving(){
       switch (state) {
         case MOVING_TO_START:
         case START:
@@ -139,7 +139,7 @@ public class Superstructure implements ISubsystem{
         switch(drivetrain.getDriveMode()){
           case FIELD_FORWARD:
             if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
-              drivetrain.setFieldDriveInputs( - driver.getLeftY(), - driver.getLeftX(), driver.getRightX());
+              drivetrain.setFieldDriveInputsDT( - driver.getLeftY(), driver.getLeftX(), driver.getRightX());
             } else {
               drivetrain.stop();
             }
@@ -152,18 +152,18 @@ public class Superstructure implements ISubsystem{
             }
             break;
           case LOCAL_FORWARD:
-            if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
-              drivetrain.setLocalDriveInputs( - driver.getLeftY(), - driver.getLeftX(), driver.getRightX());
-            } else {
-              drivetrain.stop();
-            }
+            //if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
+              drivetrain.setLocalDriveInputsDT( - driver.getLeftY(), driver.getLeftX(), driver.getRightX());
+            //} else {
+              //drivetrain.stop();
+            //}
             break;
           case LOCAL_REVERSED:
-            if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
+            //if (Util.checkDriverDeadband(Util.getLeftMagnitude(driver)) || Util.checkDriverDeadband(driver.getRightX())){
               drivetrain.setLocalDriveInputs(driver.getLeftY(), driver.getLeftX(), - driver.getRightX()); //check??
-            } else {
-              drivetrain.stop();
-            }
+            //} else {
+              //drivetrain.stop();
+            //}
             break;
           default:
             break;
@@ -173,11 +173,11 @@ public class Superstructure implements ISubsystem{
       default:
         drivetrain.setDriveMode(DriveMode.AUTO);
       }
-    } */
+    } 
 
     private void handleInputs(){ 
       if (driver.getCircleButtonPressed() || operator.getCircleButtonPressed()){
-        cancelAction();
+        //cancelAction();
       }
 
 
@@ -200,14 +200,14 @@ public class Superstructure implements ISubsystem{
 
       if (operator.getSquareButtonPressed()){
         //drivetrain.lock();
-        arm.speaker();
+        //arm.speaker();
         //shooter.speaker();
         /*if (shooter.reachedSetPoint() && arm.reachedSetPoint()){
             intake.shoot();
         }*/
       }
       if (operator.getTriangleButtonPressed()){
-        neutralPosition();
+        //neutralPosition();
       }
       if (operator.getR2Button()){
         //shooter.manualShoot();
@@ -231,13 +231,13 @@ public class Superstructure implements ISubsystem{
     public void onLoop(){
       switch (this.state) {
         case MOVING_TO_START:
-            arm.start();
+            //arm.start();
             //intake.off();
             //shooter.off();
-            if (arm.reachedSetPoint()){
+            /*if (arm.reachedSetPoint()){
                 this.state = RobotState.START;
             }
-            break;
+            break;*/
         case START:
             break;
 
@@ -262,16 +262,16 @@ public class Superstructure implements ISubsystem{
             }*/
             break;
         case HOLDING_NOTE:
-            arm.holdingPosition();
+            //arm.holdingPosition();
             //intake.off();
             break;
 
         case MOVING_TO_AMP:
-            arm.ampPosition();
+            //arm.ampPosition();
             // TODO automatically drive up to the Amp
-            if (arm.reachedSetPoint()){ // TODO add drivetrain reached set point
+            /*if (arm.reachedSetPoint()){ // TODO add drivetrain reached set point
               this.state = RobotState.READY_TO_SCORE_AMP;
-            }
+            }*/
             break;
         case READY_TO_SCORE_AMP:
             if (this.isScoringAutomated()){
@@ -287,12 +287,12 @@ public class Superstructure implements ISubsystem{
             break;
 
         case MOVING_TO_SPEAKER:
-            arm.speaker();
+            //arm.speaker();
             //drivetrain.lock();
             //shooter.speaker();
-            if (arm.reachedSetPoint() /*&& shooter.reachedSetPoint()*/){ 
+            /*if (arm.reachedSetPoint() /*&& shooter.reachedSetPoint()){ 
               this.state = RobotState.READY_TO_SCORE_SPEAKER;
-            }
+            }*/
             break;
         case READY_TO_SCORE_SPEAKER:
             if (this.isScoringAutomated()){
@@ -300,7 +300,7 @@ public class Superstructure implements ISubsystem{
             }
             break;
         case SCORING_SPEAKER: //TODO consider tying this to a seperate button for more optimized control
-            arm.speaker();
+            //arm.speaker();
             /*drivetrain.lock();
             shooter.speaker();
             intake.shoot();
@@ -311,7 +311,7 @@ public class Superstructure implements ISubsystem{
             break;
 
         case NEUTRAL:
-            arm.neutralPosition();
+            //arm.neutralPosition();
             /*drivetrain.unlock();
             intake.off();
             shooter.off();*/
@@ -321,8 +321,8 @@ public class Superstructure implements ISubsystem{
       }
       receiveOptions();
 
-      //handleDriving();
-      handleInputs();
+      handleDriving();
+      //handleInputs();
 
       for (ISubsystem s : this.subsystems){
         s.onLoop();
@@ -336,7 +336,7 @@ public class Superstructure implements ISubsystem{
     @Override
     public void submitTelemetry(){
       SmartDashboard.putString("superstructure_robotState", this.getState().toString());
-      //SmartDashboard.putString("superstructure_drivemode", drivetrain.getDriveMode().toString());
+      SmartDashboard.putString("superstructure_drivemode", drivetrain.getDriveMode().toString());
     }
 
     @Override
