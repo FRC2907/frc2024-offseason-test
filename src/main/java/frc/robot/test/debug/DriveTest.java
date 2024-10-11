@@ -76,10 +76,10 @@ public class DriveTest extends TimedRobot{
     private void breakIn(){
         timer.restart();
         //if (timer.get() < 1800){
-            top_left.set(0.1);
-            bottom_left.set(0.1);
-            top_right.set(0.1);
-            bottom_right.set(0.1);
+            top_left.set(0.3);
+            bottom_left.set(0.3);
+            top_right.set(0.3);
+            bottom_right.set(0.3);
         //}
     }
     private void accelTest(){
@@ -120,15 +120,20 @@ public class DriveTest extends TimedRobot{
 
     @Override
     public void teleopPeriodic(){
-        //dt.driveCartesian( - driver.getLeftY(), driver.getLeftX(), driver.getRightX());
+        dt.driveCartesian( - driver.getLeftY(), driver.getLeftX(), driver.getRightX());
         //dt.driveCartesian( - driver.getLeftX(), driver.getLeftY(), driver.getRightX(), gyro.getRotation2d());
         //breakIn();  //use to break in motors for 30 minutes
         //accelTest();
         //conversionTest();
 
         //volts = driver.getLeftY() * 12;
-        volts = 0.13;
-        top_right.setVoltage(volts);
+        /*volts = 0.13;
+        double speed = driver.getLeftY();
+        top_left.set(speed);
+        bottom_left.set(speed);
+        top_right.set(speed);
+        bottom_right.set(speed);*/
+
 
         SmartDashboard.putNumber("flVelocity", top_left.getEncoder().getVelocity());
         SmartDashboard.putNumber("rlVelocity", bottom_left.getEncoder().getVelocity());

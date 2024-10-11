@@ -43,9 +43,8 @@ public class Control {
                           (1 / kInchesPerMinuteToMetersPerSecond) 
                         / (MechanismDimensions.drivetrain.WHEEL_DIAMETER * Math.PI)
                         *  MechanismDimensions.drivetrain.GEAR_RATIO;
-
         
-                        
+        public static final double kMaxVel = 1200;
     }
 
     public static class intake { //TODO fix/measure intake control constants

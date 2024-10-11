@@ -51,8 +51,8 @@ public class Superstructure implements ISubsystem{
       //this.led = Led.getInstance();
       //this.shooter = Shooter.getInstance();
       this.subsystems = new ISubsystem[] { /*arm,*/ drivetrain, /*intake, led, /*shooter*/ };
-      NamedCommands.registerCommand("Intake Note", new IntakeNote());
-      NamedCommands.registerCommand("Shoot Note", new ShootNote());
+      //NamedCommands.registerCommand("Intake Note", new IntakeNote());
+      //NamedCommands.registerCommand("Shoot Note", new ShootNote());
     } 
 
     private Superstructure(){

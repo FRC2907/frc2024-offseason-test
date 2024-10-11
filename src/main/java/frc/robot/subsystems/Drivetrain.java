@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.Control;
 import frc.robot.constants.FieldElements;
 import frc.robot.constants.MechanismDimensions;
 import frc.robot.constants.MotorControllers;
@@ -66,7 +67,12 @@ public class Drivetrain extends SubsystemBase implements ISubsystem{
       this.desiredHeading = gyro.getAngle();
       this.headingController = new PIDController(2, 1, 1);
 
-      this.dt = new MecanumDrive(frontLeft, rearLeft, frontRight, rearRight);
+      this.dt = new MecanumDrive(
+        u -> {frontLeft .getPIDController().setReference(u * Control.drivetrain.kMaxVel, ControlType.kVelocity, 0);}
+      , u -> {rearLeft  .getPIDController().setReference(u * Control.drivetrain.kMaxVel, ControlType.kVelocity, 0);}
+      , u -> {frontRight.getPIDController().setReference(u * Control.drivetrain.kMaxVel, ControlType.kVelocity, 0);}
+      , u -> {rearRight .getPIDController().setReference(u * Control.drivetrain.kMaxVel, ControlType.kVelocity, 0);}
+      );
 
       this.sb_field = new Field2d();
       SmartDashboard.putData(sb_field);
@@ -121,7 +127,7 @@ public class Drivetrain extends SubsystemBase implements ISubsystem{
       wheelSpeedsToActualSpeeds(wheelSpeeds);
     }
     public void setLocalDriveInputsDT(double driverX, double driverY, double driverZ){
-      this.dt.driveCartesian(driverX, driverY, driverZ);
+      this.dt.driveCartesian(0.75 * driverX, 0.75 * driverY, 0.75 * driverZ);
     }
     public void setLocalDriveInputsDT(ChassisSpeeds speeds){
       uglyCartesianIK(speeds);
@@ -299,7 +305,7 @@ public class Drivetrain extends SubsystemBase implements ISubsystem{
     public void onLoop(){
       receiveOptions();
       updatePoseFromSensors();
-      sendMotorInputs(frontLeftSpeed, rearLeftSpeed, frontRightSpeed, rearRightSpeed);
+      //sendMotorInputs(frontLeftSpeed, rearLeftSpeed, frontRightSpeed, rearRightSpeed);
       submitTelemetry();
     }
 
@@ -313,6 +319,7 @@ public class Drivetrain extends SubsystemBase implements ISubsystem{
       SmartDashboard.putNumber("drivetrain_yVelocity", getYVelocity());
       SmartDashboard.putNumber("drivetrain_heading", gyro.getAngle());
       SmartDashboard.putNumber("drivetrain_angularVelocity", gyro.getRate());
+      SmartDashboard.putNumber("flVoltage", frontLeftMotor.getBusVoltage() * frontLeftMotor.getAppliedOutput());
 
       sb_field.setRobotPose(getPose());
     }
