@@ -28,6 +28,7 @@ public class MotorControllers {
             _drivetrainfl.restoreFactoryDefaults();
             _drivetrainfl.setIdleMode(IdleMode.kBrake);
             _drivetrainfl.setInverted(false);
+            _drivetrainfl.getPIDController().setFF(0.00099);
             //_drivetrainfl.getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
         }
         return _drivetrainfl;
@@ -38,6 +39,7 @@ public class MotorControllers {
             _drivetrainrl.restoreFactoryDefaults();
             _drivetrainrl.setIdleMode(IdleMode.kBrake);
             _drivetrainrl.setInverted(false);
+            _drivetrainrl.getPIDController().setFF(0.00109);
             //_drivetrainrl.getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
         }
         return _drivetrainrl;
@@ -48,6 +50,7 @@ public class MotorControllers {
             _drivetrainfr.restoreFactoryDefaults();
             _drivetrainfr.setIdleMode(IdleMode.kBrake);
             _drivetrainfr.setInverted(true);
+            _drivetrainfr.getPIDController().setFF(0.00107);
             //_drivetrainfr.getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
         }
         return _drivetrainfr;
@@ -58,6 +61,7 @@ public class MotorControllers {
             _drivetrainrr.restoreFactoryDefaults();
             _drivetrainrr.setIdleMode(IdleMode.kBrake);
             _drivetrainrr.setInverted(true);
+            _drivetrainrr.getPIDController().setFF(0.00115);
            // _drivetrainrr.getEncoder().setVelocityConversionFactor(Control.drivetrain.kVelocityConversionFactor);
         }
         return _drivetrainrr;
